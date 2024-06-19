@@ -1,0 +1,13 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 91ffffb
+_src_path: gh:scipp/copier_template
+description: Dimensioned Python arrays with dimension names and physical units
+max_python: '3.12'
+min_python: '3.12'
+namespace_package: ''
+nightly_deps: ''
+orgname: pydray
+prettyname: Dray
+projectname: dray
+related_projects: ''
+year: 2024

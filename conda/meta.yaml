@@ -1,0 +1,49 @@
+package:
+  name: dray
+
+  version: {{ GIT_DESCRIBE_TAG }}
+
+source:
+  path: ..
+
+
+{% set pyproject = load_file_data('pyproject.toml') %}
+{% set dependencies = pyproject.get('project', {}).get('dependencies', {}) %}
+
+
+requirements:
+  build:
+    - setuptools
+    - setuptools_scm
+  run:
+    - python>=3.12
+
+  {% for package in dependencies %}
+    - {% if package == "graphviz" %}python-graphviz{% else %}{{ package }}{% endif %}
+  {% endfor %}
+
+
+test:
+  imports:
+    - dray
+  requires:
+    - pytest
+  source_files:
+    - pyproject.toml
+    - tests/
+  commands:
+    # We ignore warnings during release package builds
+    - python -m pytest -Wignore tests
+
+build:
+  noarch: python
+  script:
+    - python -m pip install .
+
+about:
+  home: https://github.com/pydray/dray
+  license: BSD-3-Clause
+  summary: Dimensioned Python arrays with dimension names and physical units
+  description: Dimensioned Python arrays with dimension names and physical units
+  dev_url: https://github.com/pydray/dray
+  doc_url: https://pydray.github.io/dray

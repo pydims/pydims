@@ -1,0 +1,40 @@
+# Build artifacts
+build
+dist
+html
+.tox
+*.egg-info
+
+*.sw?
+
+# Environments
+venv
+
+# Caches
+.clangd/
+*.ipynb_checkpoints
+__pycache__/
+.vs/
+.virtual_documents
+.hypothesis
+.pytest_cache
+.mypy_cache
+docs/generated/
+
+# Editor settings
+.idea/
+.vscode/
+
+# Data files
+*.data
+*.dat
+*.csv
+*.xye
+*.h5
+*.hdf5
+*.hdf
+*.nxs
+*.raw
+*.cif
+*.rcif
+*.ort
