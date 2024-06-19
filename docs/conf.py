@@ -78,7 +78,6 @@ typehints_defaults = 'comma'
 typehints_use_rtype = False
 
 
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -143,8 +142,7 @@ html_theme_options = {
         "image_dark": "_static/logo-dark.svg",
     },
     "external_links": [
-{"name": "", "url": "https://pydray.github.io/"},
-
+        {"name": "", "url": "https://pydray.github.io/"},
     ],
     "icon_links": [
         {

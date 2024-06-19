@@ -1,9 +1,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2024 Pydray contributors (https://github.com/pydray)
+from collections.abc import Hashable
 from dataclasses import dataclass
 from typing import Protocol
-
-from collections.abc import Hashable
 
 
 class ArrayImplementation(Protocol):
@@ -37,4 +36,4 @@ class Dray:
     # - not dict, since duplicates need to be supported
     @property
     def sizes(self) -> dict[Hashable, int]:
-        return dict(zip(self.dims, self.shape))
+        return dict(zip(self.dims, self.shape, strict=True))
