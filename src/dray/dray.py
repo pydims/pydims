@@ -6,18 +6,33 @@ from typing import Protocol
 from collections.abc import Hashable
 
 
-class Values(Protocol):
+class ArrayImplementation(Protocol):
     """Array of values following the Python array API standard."""
 
-    pass
 
-
-class Unit(Protocol):
+class UnitImplementation(Protocol):
     pass
 
 
 @dataclass
 class Dray:
-    values: Values
+    """
+    General idea:
+    - __getitem__ accepts dict with dims labels. Only 1-D allows for omitting index.
+    - Probably we need to support duplicate dims
+    """
+
+    values: ArrayImplementation
     dims: tuple[Hashable, ...]
-    unit: Unit | None
+    unit: UnitImplementation | None
+
+    @property
+    def shape(self) -> tuple[int, ...]:
+        return self.values.shape
+
+    # TODO
+    # - not mutable dict
+    # - not dict, since duplicates need to be supported
+    @property
+    def sizes(self) -> dict[Hashable, int]:
+        return dict(zip(self.dims, self.shape))
