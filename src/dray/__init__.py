@@ -10,3 +10,7 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "0.0.0"
 
 del importlib
+
+from .dray import Dray
+
+__all__ = ["Dray"]
