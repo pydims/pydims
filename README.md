@@ -7,7 +7,13 @@
 
 ## About
 
-Dimensioned Python arrays with dimension names and physical units
+Dimensioned Python arrays with dimension names and physical units.
+
+Our goal is to provide a library wrapping any array library that supports the [Python array API standard](https://data-apis.org/array-api/latest/), adding named dimensions as well as physical units.
+This is an alternative to Xarray's `NamedArray`.
+The two main differences are
+1. NamedArray supports `attrs`, which we think add unnecesary complexity while suffering from [conceptual problems](https://scipp.github.io/development/adr/0016-do-not-support-attrs.html).
+2. Dray support physical units via a `units` attribute, which we consider central and tightly linked to the concept of an array.
 
 ## Installation
 
