@@ -20,6 +20,8 @@ class Dray:
     General idea:
     - __getitem__ accepts dict with dims labels. Only 1-D allows for omitting index.
     - Probably we need to support duplicate dims
+    - dims should be readonly?
+    - unit must avoid assigning from slices? Do we need readonly flags?
     """
 
     values: ArrayImplementation
