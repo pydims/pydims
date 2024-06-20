@@ -5,6 +5,8 @@
 #
 #    pip-compile-multi
 #
+exceptiongroup==1.2.1
+    # via pytest
 iniconfig==2.0.0
     # via pytest
 numpy==2.0.0
@@ -19,3 +21,5 @@ pytest==8.2.2
     # via -r basetest.in
 scipp==24.5.1
     # via -r basetest.in
+tomli==2.0.1
+    # via pytest

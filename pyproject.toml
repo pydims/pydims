@@ -28,6 +28,7 @@ requires-python = ">=3.12"
 # Run 'tox -e deps' after making changes here. This will update requirement files.
 # Make sure to list one dependency per line.
 dependencies = [
+  "array-api-compat",
 ]
 
 dynamic = ["version"]
