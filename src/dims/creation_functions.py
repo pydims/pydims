@@ -35,5 +35,5 @@ class CreationFunctions:
         return DimensionedArray(
             values=self._array_api.linspace(start, stop, num, **kwargs),
             dims=(dim,),
-            unit=self._unit_api(unit),
+            unit=None if unit is None else self._unit_api(unit),
         )
