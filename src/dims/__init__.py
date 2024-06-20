@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2024 Pydray contributors (https://github.com/pydray)
+# Copyright (c) 2024 Dims contributors (https://github.com/pydray)
 # ruff: noqa: E402, F401
 
 import importlib.metadata
@@ -11,6 +11,6 @@ except importlib.metadata.PackageNotFoundError:
 
 del importlib
 
-from .dray import Dray
+from .dimensioned_array import DimensionedArray
 
-__all__ = ["Dray"]
+__all__ = ["DimensionedArray"]

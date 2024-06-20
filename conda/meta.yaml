@@ -1,5 +1,5 @@
 package:
-  name: dray
+  name: dims
 
   version: {{ GIT_DESCRIBE_TAG }}
 
@@ -25,7 +25,7 @@ requirements:
 
 test:
   imports:
-    - dray
+    - dims
   requires:
     - pytest
   source_files:
@@ -41,9 +41,9 @@ build:
     - python -m pip install .
 
 about:
-  home: https://github.com/pydray/dray
+  home: https://github.com/pydray/dims
   license: BSD-3-Clause
   summary: Dimensioned Python arrays with dimension names and physical units
   description: Dimensioned Python arrays with dimension names and physical units
-  dev_url: https://github.com/pydray/dray
-  doc_url: https://pydray.github.io/dray
+  dev_url: https://github.com/pydray/dims
+  doc_url: https://pydray.github.io/dims

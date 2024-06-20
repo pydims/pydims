@@ -14,7 +14,7 @@ class UnitImplementation(Protocol):
 
 
 @dataclass
-class Dray:
+class DimensionedArray:
     """
     General idea:
     - __getitem__ accepts dict with dims labels. Only 1-D allows for omitting index.

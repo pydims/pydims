@@ -7,7 +7,7 @@ min_python: '3.12'
 namespace_package: ''
 nightly_deps: ''
 orgname: pydray
-prettyname: Dray
-projectname: dray
+prettyname: Dims
+projectname: dims
 related_projects: ''
 year: 2024

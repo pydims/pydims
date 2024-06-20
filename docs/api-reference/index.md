@@ -3,7 +3,7 @@
 ## Classes
 
 ```{eval-rst}
-.. currentmodule:: dray
+.. currentmodule:: dims
 
 .. autosummary::
    :toctree: ../generated/classes
