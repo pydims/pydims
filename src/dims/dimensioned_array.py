@@ -11,6 +11,10 @@ import array_api_compat
 DType = Any  # Is the array API standard defining a DType type?
 
 
+class DimensionError(Exception):
+    pass
+
+
 class ArrayImplementation(Protocol):
     """Array of values following the Python array API standard."""
 
@@ -89,7 +93,7 @@ class DimensionedArray:
     @property
     def dim(self) -> Hashable:
         if len(self.dims) != 1:
-            raise ValueError("Number of dimensions must be 1")
+            raise DimensionError("Number of dimensions must be 1")
         return self.dims[0]
 
     @property
@@ -150,6 +154,22 @@ class DimensionedArray:
                 if self.unit is None and other.unit is None
                 else unit_op(self.unit, other.unit)
             ),
+        )
+
+    def __getitem__(
+        self, key: int | slice | dict[Hashable, int | slice]
+    ) -> DimensionedArray:
+        if isinstance(key, int | slice):
+            if self.ndim != 1:
+                raise DimensionError("Only 1-D arrays can be indexed without dims")
+            key = {self.dim: key}
+
+        dims = tuple(dim for dim in self.dims if not isinstance(key.get(dim), int))
+        values_key = tuple(key.pop(dim, slice(None)) for dim in self.dims)
+        if key:
+            raise ValueError(f"Unknown dimensions: {key.keys()}")
+        return DimensionedArray(
+            values=self.values[values_key], dims=dims, unit=self.unit
         )
 
     def __neg__(self) -> DimensionedArray:

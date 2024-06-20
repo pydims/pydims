@@ -7,6 +7,7 @@ Will not support:
 
 - broadcast_arrays
 - broadcast_to
+- reshape -> use fold and flatten instead
 """
 
 from collections.abc import Hashable
@@ -48,6 +49,12 @@ def concat(
     )
 
 
+def reshape(*args, **kwargs):
+    raise NotImplementedError(
+        "`reshape` is deliberately not supported `fold` and `flatten` instead"
+    )
+
+
 def stack(
     arrays: tuple[DimensionedArray, ...] | list[DimensionedArray],
     /,
@@ -86,4 +93,4 @@ def stack(
     return DimensionedArray(xp.stack(values, axis=axis), dims=dims, unit=first.unit)
 
 
-__all__ = ['concat', 'stack']
+__all__ = ['concat', 'reshape', 'stack']

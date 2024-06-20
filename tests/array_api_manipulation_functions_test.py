@@ -25,6 +25,13 @@ def test_concat():
     )
 
 
+def test_reshape_raises_NotImplementedError():
+    with pytest.raises(
+        NotImplementedError, match="`reshape` is deliberately not supported"
+    ):
+        dms.reshape()
+
+
 def test_stack():
     da = dms.DimensionedArray(values=np.ones((4, 3)), dims=('x', 'y'), unit=None)
     assert_identical(
