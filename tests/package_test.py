@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2024 Pydray contributors (https://github.com/pydray)
-import dray as pkg
+import dims as pkg
 
 
 def test_has_version():

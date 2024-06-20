@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath('.'))
 logger = logging.getLogger(__name__)
 
 # General information about the project.
-project = 'Dray'
+project = 'Dims'
 copyright = '2024 Scipp contributors'
 author = 'Scipp contributors'
 
@@ -96,7 +96,7 @@ master_doc = 'index'
 #
 
 try:
-    release = get_version("dray")
+    release = get_version("dims")
     version = ".".join(release.split('.')[:3])  # CalVer
 except PackageNotFoundError:
     logger.info(
@@ -147,19 +147,19 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/pydray/dray",
+            "url": "https://github.com/pydray/dims",
             "icon": "fa-brands fa-github",
             "type": "fontawesome",
         },
         {
             "name": "PyPI",
-            "url": "https://pypi.org/project/dray/",
+            "url": "https://pypi.org/project/dims/",
             "icon": "fa-brands fa-python",
             "type": "fontawesome",
         },
         {
             "name": "Conda",
-            "url": "https://anaconda.org/pydray/dray",
+            "url": "https://anaconda.org/pydray/dims",
             "icon": "fa-custom fa-anaconda",
             "type": "fontawesome",
         },
@@ -174,7 +174,7 @@ html_sidebars = {
     "**": ["sidebar-nav-bs", "page-toc"],
 }
 
-html_title = "Dray"
+html_title = "Dims"
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.ico"
 
@@ -188,7 +188,7 @@ html_js_files = ["anaconda-icon.js"]
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'draydoc'
+htmlhelp_basename = 'dimsdoc'
 
 # -- Options for Matplotlib in notebooks ----------------------------------
 
