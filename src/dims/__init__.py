@@ -11,6 +11,6 @@ except importlib.metadata.PackageNotFoundError:
 
 del importlib
 
-from .dimensioned_array import DimensionedArray
+from .dimensioned_array import DimensionedArray, exp
 
-__all__ = ["DimensionedArray"]
+__all__ = ["DimensionedArray", "exp"]

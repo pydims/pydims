@@ -2,7 +2,9 @@
 # Copyright (c) 2024 Dims contributors (https://github.com/pydray)
 from __future__ import annotations
 
+import importlib
 from collections.abc import Callable, Hashable, Mapping
+from types import ModuleType
 from typing import Any, Protocol
 
 DType = Any  # Is the array API standard defining a DType type?
@@ -92,7 +94,9 @@ class DimensionedArray:
         unit_op: Callable[[UnitImplementation], UnitImplementation] | None = None,
     ) -> DimensionedArray:
         return DimensionedArray(
-            values=values_op(self.values), dims=self.dims, unit=unit_op(self._unit)
+            values=values_op(self.values),
+            dims=self.dims,
+            unit=None if self.unit is None else unit_op(self.unit),
         )
 
     def __neg__(self) -> DimensionedArray:
@@ -105,13 +109,19 @@ def _unchanged_unit(unit: UnitImplementation) -> UnitImplementation:
     return unit
 
 
-def _must_have_unit(unit: UnitImplementation) -> UnitImplementation:
-    if unit is None:
-        raise ValueError("Unit must be provided")
-
-
 def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
-    _must_have_unit(unit)
     if unit != unit.dimensionless:
         raise ValueError("Unit must be dimensionless")
     return unit
+
+
+def _array_namespace(x: DimensionedArray) -> ModuleType:
+    # I thought __array_namespace__ should give this? NumPy does not have it.
+    module_name = x.values.__class__.__module__
+    return importlib.import_module(module_name)
+
+
+def exp(x: DimensionedArray, /) -> DimensionedArray:
+    return x._unary_op(
+        values_op=_array_namespace(x).exp, unit_op=_unit_must_be_dimensionless
+    )
