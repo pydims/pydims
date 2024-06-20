@@ -142,12 +142,12 @@ html_theme_options = {
         "image_dark": "_static/logo-dark.svg",
     },
     "external_links": [
-        {"name": "", "url": "https://pydray.github.io/"},
+        {"name": "", "url": "https://pydims.github.io/"},
     ],
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/pydray/dims",
+            "url": "https://github.com/pydims/dims",
             "icon": "fa-brands fa-github",
             "type": "fontawesome",
         },
@@ -159,7 +159,7 @@ html_theme_options = {
         },
         {
             "name": "Conda",
-            "url": "https://anaconda.org/pydray/dims",
+            "url": "https://anaconda.org/pydims/dims",
             "icon": "fa-custom fa-anaconda",
             "type": "fontawesome",
         },

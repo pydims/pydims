@@ -41,9 +41,9 @@ build:
     - python -m pip install .
 
 about:
-  home: https://github.com/pydray/dims
+  home: https://github.com/pydims/dims
   license: BSD-3-Clause
-  summary: Dimensioned Python arrays with dimension names and physical units
-  description: Dimensioned Python arrays with dimension names and physical units
-  dev_url: https://github.com/pydray/dims
-  doc_url: https://pydray.github.io/dims
+  summary: Python arrays with named dimension and physical units
+  description: Python arrays with named dimension and physical units
+  dev_url: https://github.com/pydims/dims
+  doc_url: https://pydims.github.io/dims

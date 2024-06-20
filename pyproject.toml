@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dims"
-description = "Dimensioned Python arrays with dimension names and physical units"
+description = "Python arrays with named dimension and physical units"
 authors = [{ name = "Scipp contributors" }]
 license = { file = "LICENSE" }
 readme = "README.md"
@@ -34,9 +34,9 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-"Bug Tracker" = "https://github.com/pydray/dims/issues"
-"Documentation" = "https://pydray.github.io/dims"
-"Source" = "https://github.com/pydray/dims"
+"Bug Tracker" = "https://github.com/pydims/dims/issues"
+"Documentation" = "https://pydims.github.io/dims"
+"Source" = "https://github.com/pydims/dims"
 
 [tool.setuptools_scm]
 

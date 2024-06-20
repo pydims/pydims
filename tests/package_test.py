@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2024 Pydray contributors (https://github.com/pydray)
+# Copyright (c) 2024 Pydims contributors (https://github.com/pydims)
 import dims as pkg
 
 

@@ -18,9 +18,9 @@ To cite a specific version of Dims, select the desired version on Zenodo to get 
 
 ## Older versions of the documentation
 
-Older versions of the documentation pages can be found under the assets of each [release](https://github.com/pydray/dims/releases).
+Older versions of the documentation pages can be found under the assets of each [release](https://github.com/pydims/dims/releases).
 Simply download the archive, unzip and view locally in a web browser.
 
 ## Source code and development
 
-Dims is hosted and developed [on GitHub](https://github.com/pydray/dims).
+Dims is hosted and developed [on GitHub](https://github.com/pydims/dims).
