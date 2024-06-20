@@ -7,12 +7,6 @@ import dims as dms
 from dims.testing import assert_identical
 
 
-@pytest.mark.parametrize('dims', [(), ('x',), ('x', 'y', 'z')])
-def test_init_raises_if_dims_has_wrong_length(dims: tuple[str, ...]):
-    with pytest.raises(ValueError, match="Number of dimensions"):
-        dms.DimensionedArray(values=np.ones((2, 3)), dims=dims, unit=None)
-
-
 def test_concat():
     da = dms.DimensionedArray(values=np.ones((2, 3)), dims=('x', 'y'), unit=None)
     assert_identical(

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 Dims contributors (https://github.com/pydims)
 from __future__ import annotations
 
-from collections.abc import Callable, Hashable, Mapping
+from collections.abc import Callable, Hashable, Iterator, Mapping
 from functools import cached_property
 from typing import Any, Protocol
 
@@ -23,21 +23,24 @@ class UnitImplementation(Protocol):
     pass
 
 
+# Tuple is hashable so this leads to some ambiguity, but if in doubt a tuple is
+# interpreted as a tuple of dimensions, not a single dimension.
+Dim = Hashable
+Dims = tuple[Dim, ...]
+
+
 class Sizes(Mapping):
-    def __init__(self, dims: tuple[Hashable, ...], shape: tuple[int, ...]):
+    def __init__(self, dims: Dims, shape: tuple[int, ...]):
         self._data = dict(zip(dims, shape, strict=True))
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> int:
         return self._data[key]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Dim]:
         return iter(self._data)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._data)
-
-
-Dims = tuple[Hashable, ...]
 
 
 class DimensionedArray:
@@ -91,7 +94,7 @@ class DimensionedArray:
         return self._dims
 
     @property
-    def dim(self) -> Hashable:
+    def dim(self) -> Dim:
         if len(self.dims) != 1:
             raise DimensionError("Number of dimensions must be 1")
         return self.dims[0]
@@ -157,7 +160,7 @@ class DimensionedArray:
         )
 
     def __getitem__(
-        self, key: int | slice | dict[Hashable, int | slice]
+        self, key: int | slice | dict[Dim, int | slice]
     ) -> DimensionedArray:
         if isinstance(key, int | slice):
             if self.ndim != 1:

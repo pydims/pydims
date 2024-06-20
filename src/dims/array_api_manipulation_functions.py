@@ -10,15 +10,13 @@ Will not support:
 - reshape -> use fold and flatten instead
 """
 
-from collections.abc import Hashable
-
 import array_api_compat
 
-from .dimensioned_array import DimensionedArray
+from .dimensioned_array import Dim, DimensionedArray
 
 
 def concat(
-    arrays: tuple[DimensionedArray, ...], /, *, dim: Hashable | None = None
+    arrays: tuple[DimensionedArray, ...], /, *, dim: Dim | None = None
 ) -> DimensionedArray:
     """
     Concatenate arrays along a given dimension.
@@ -32,7 +30,7 @@ def concat(
 
     Returns
     -------
-    DimensionedArray
+    :
         Concatenated array.
     """
     first = arrays[0]
@@ -59,7 +57,7 @@ def stack(
     arrays: tuple[DimensionedArray, ...] | list[DimensionedArray],
     /,
     *,
-    dim: Hashable,
+    dim: Dim,
     axis: int = 0,
 ) -> DimensionedArray:
     """

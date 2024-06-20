@@ -13,5 +13,15 @@ del importlib
 
 from .dimensioned_array import DimensionedArray, DimensionError, exp
 from .array_api_manipulation_functions import concat, reshape, stack
+from .array_api_utility_functions import all, any
 
-__all__ = ['DimensionedArray', 'DimensionError', 'exp', 'concat', 'reshape', 'stack']
+__all__ = [
+    'all',
+    'any',
+    'DimensionedArray',
+    'DimensionError',
+    'exp',
+    'concat',
+    'reshape',
+    'stack',
+]
