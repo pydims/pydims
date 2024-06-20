@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright (c) 2024 Dims contributors (https://github.com/pydims)
+
+import dims as dms
+
+
+def assert_identical(a: dms.DimensionedArray, b: dms.DimensionedArray):
+    # TODO This is a quick hack for early testing
+    assert a.dims == b.dims  # noqa: S101
+    assert a.shape == b.shape  # noqa: S101
+    assert a.dtype == b.dtype  # noqa: S101
+    assert a.unit == b.unit  # noqa: S101
+    assert (a.values == b.values).all()  # noqa: S101
