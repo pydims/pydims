@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .dimensioned_array import Dim, DimensionedArray, DType, UnitImplementation
+from .dimensioned_array import Dim, DimensionedArray, UnitImplementation
 
 # TODO
 # For creation functions, add a helper that can be initialized with an array namespace,
@@ -26,14 +26,14 @@ class CreationFunctions:
         /,
         num: int,
         *,
-        dtype: DType | None = None,
         unit: (
             Any | UnitImplementation
         ),  # TODO Default to different unit based on type if not given?
+        **kwargs: Any,  # dtype, device, endpoint
     ) -> DimensionedArray:
         # TODO always call _unit_api, or check if isinstance already?
         return DimensionedArray(
-            values=self._array_api.linspace(start, stop, num, dtype=dtype),
+            values=self._array_api.linspace(start, stop, num, **kwargs),
             dims=(dim,),
             unit=self._unit_api(unit),
         )
