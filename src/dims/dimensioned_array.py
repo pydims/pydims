@@ -98,7 +98,7 @@ class DimensionedArray:
     def values(self) -> ArrayImplementation:
         return self._values
 
-    def _unary_op(
+    def elemwise_unary(
         self,
         values_op: Callable[[ArrayImplementation], ArrayImplementation],
         unit_op: Callable[[UnitImplementation], UnitImplementation],
@@ -109,9 +109,11 @@ class DimensionedArray:
             unit=None if self.unit is None else unit_op(self.unit),
         )
 
-    def _binary_op(
+    def elemwise_binary(
         self,
+        /,
         other: DimensionedArray,
+        *,
         values_op: Callable[
             [ArrayImplementation, ArrayImplementation], ArrayImplementation
         ],
@@ -135,18 +137,18 @@ class DimensionedArray:
             unit=(
                 None
                 # TODO do not mix unit with None
-                if self.unit is None or other.unit is None
+                if self.unit is None and other.unit is None
                 else unit_op(self.unit, other.unit)
             ),
         )
 
     def __neg__(self) -> DimensionedArray:
-        return self._unary_op(
+        return self.elemwise_unary(
             values_op=self.values.__class__.__neg__, unit_op=_unchanged_unit
         )
 
     def __add__(self, other: DimensionedArray) -> DimensionedArray:
-        return self._binary_op(
+        return self.elemwise_binary(
             other,
             values_op=self.values.__class__.__add__,
             unit_op=_same_unit,
@@ -176,6 +178,6 @@ def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
 
 
 def exp(x: DimensionedArray, /) -> DimensionedArray:
-    return x._unary_op(
+    return x.elemwise_unary(
         values_op=x._array_namespace.exp, unit_op=_unit_must_be_dimensionless
     )
