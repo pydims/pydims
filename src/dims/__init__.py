@@ -12,5 +12,6 @@ except importlib.metadata.PackageNotFoundError:
 del importlib
 
 from .dimensioned_array import DimensionedArray, exp
+from .array_api_manipulation_functions import concat
 
-__all__ = ["DimensionedArray", "exp"]
+__all__ = ['DimensionedArray', 'exp', 'concat']

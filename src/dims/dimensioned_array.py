@@ -61,7 +61,7 @@ class DimensionedArray:
         self._unit = unit
 
     @cached_property
-    def _array_namespace(self) -> ModuleType:
+    def array_api(self) -> ModuleType:
         # I thought __array_namespace__ should give this? NumPy does not have it.
         module_name = self.values.__class__.__module__
         return importlib.import_module(module_name)
@@ -81,6 +81,12 @@ class DimensionedArray:
     @property
     def dims(self) -> Dims:
         return self._dims
+
+    @property
+    def dim(self) -> Hashable:
+        if len(self.dims) != 1:
+            raise ValueError("Number of dimensions must be 1")
+        return self.dims[0]
 
     @property
     def unit(self) -> UnitImplementation | None:
@@ -121,16 +127,16 @@ class DimensionedArray:
     ) -> DimensionedArray:
         dims = _merge_dims(self.dims, other.dims)
         a = self.values
-        b = other._array_namespace.moveaxis(
+        b = other.array_api.moveaxis(
             other.values,
             source=[other.dims.index(dim) for dim in dims if dim in other.dims],
             destination=range(other.ndim),
         )
         for dim in dims:
             if dim not in self.dims:
-                a = self._array_namespace.expand_dims(a, axis=dims.index(dim))
+                a = self.array_api.expand_dims(a, axis=dims.index(dim))
             if dim not in other.dims:
-                b = other._array_namespace.expand_dims(b, axis=dims.index(dim))
+                b = other.array_api.expand_dims(b, axis=dims.index(dim))
         return DimensionedArray(
             values=values_op(a, b),
             dims=dims,
@@ -179,5 +185,5 @@ def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
 
 def exp(x: DimensionedArray, /) -> DimensionedArray:
     return x.elemwise_unary(
-        values_op=x._array_namespace.exp, unit_op=_unit_must_be_dimensionless
+        values_op=x.array_api.exp, unit_op=_unit_must_be_dimensionless
     )
