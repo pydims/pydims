@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2024 Dims contributors (https://github.com/pydray)
-from collections.abc import Hashable, Mapping
+from __future__ import annotations
+
+from collections.abc import Callable, Hashable, Mapping
 from typing import Any, Protocol
 
 DType = Any  # Is the array API standard defining a DType type?
@@ -69,6 +71,10 @@ class DimensionedArray:
         return self._dims
 
     @property
+    def unit(self) -> UnitImplementation | None:
+        return self._unit
+
+    @property
     def shape(self) -> tuple[int, ...]:
         return self._values.shape
 
@@ -79,3 +85,33 @@ class DimensionedArray:
     @property
     def values(self) -> ArrayImplementation:
         return self._values
+
+    def _unary_op(
+        self,
+        values_op: Callable[[ArrayImplementation], ArrayImplementation],
+        unit_op: Callable[[UnitImplementation], UnitImplementation] | None = None,
+    ) -> DimensionedArray:
+        return DimensionedArray(
+            values=values_op(self.values), dims=self.dims, unit=unit_op(self._unit)
+        )
+
+    def __neg__(self) -> DimensionedArray:
+        return self._unary_op(
+            values_op=self.values.__class__.__neg__, unit_op=_unchanged_unit
+        )
+
+
+def _unchanged_unit(unit: UnitImplementation) -> UnitImplementation:
+    return unit
+
+
+def _must_have_unit(unit: UnitImplementation) -> UnitImplementation:
+    if unit is None:
+        raise ValueError("Unit must be provided")
+
+
+def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
+    _must_have_unit(unit)
+    if unit != unit.dimensionless:
+        raise ValueError("Unit must be dimensionless")
+    return unit
