@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2024 Pydray contributors (https://github.com/pydray)
-from collections.abc import Hashable
-from dataclasses import dataclass
+# Copyright (c) 2024 Dims contributors (https://github.com/pydray)
+from collections.abc import Hashable, Mapping
 from typing import Protocol
 
 
@@ -13,7 +12,20 @@ class UnitImplementation(Protocol):
     pass
 
 
-@dataclass
+class Sizes(Mapping):
+    def __init__(self, dims: tuple[Hashable, ...], shape: tuple[int, ...]):
+        self._data = dict(zip(dims, shape, strict=True))
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __iter__(self):
+        return iter(self._data)
+
+    def __len__(self):
+        return len(self._data)
+
+
 class DimensionedArray:
     """
     General idea:
@@ -23,17 +35,24 @@ class DimensionedArray:
     - unit must avoid assigning from slices? Do we need readonly flags?
     """
 
-    values: ArrayImplementation
-    dims: tuple[Hashable, ...]
-    unit: UnitImplementation | None
+    def __init__(
+        self,
+        values: ArrayImplementation,
+        dims: tuple[Hashable, ...],
+        unit: UnitImplementation | None,
+    ):
+        self._values = values
+        self._dims = dims
+        self._unit = unit
+
+    @property
+    def dims(self) -> tuple[Hashable, ...]:
+        return self._dims
 
     @property
     def shape(self) -> tuple[int, ...]:
-        return self.values.shape
+        return self._values.shape
 
-    # TODO
-    # - not mutable dict
-    # - not dict, since duplicates need to be supported
     @property
-    def sizes(self) -> dict[Hashable, int]:
-        return dict(zip(self.dims, self.shape, strict=True))
+    def sizes(self) -> Sizes:
+        return Sizes(dims=self.dims, shape=self.shape)
