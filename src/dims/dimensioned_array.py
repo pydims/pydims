@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2024 Dims contributors (https://github.com/pydray)
+# Copyright (c) 2024 Dims contributors (https://github.com/pydims)
 from __future__ import annotations
 
-import importlib
 from collections.abc import Callable, Hashable, Mapping
 from functools import cached_property
-from types import ModuleType
 from typing import Any, Protocol
+
+import array_api_compat
 
 DType = Any  # Is the array API standard defining a DType type?
 
@@ -57,14 +57,18 @@ class DimensionedArray:
                 f"not match number of dims ({len(dims)})"
             )
         self._values = values
-        self._dims = dims
+        self._dims = tuple(dims)
         self._unit = unit
 
+    def __str__(self) -> str:
+        return (
+            f"dims={self.dims}\nshape={self.shape}\n"
+            f"values={self.values}\nunit={self.unit}"
+        )
+
     @cached_property
-    def array_api(self) -> ModuleType:
-        # I thought __array_namespace__ should give this? NumPy does not have it.
-        module_name = self.values.__class__.__module__
-        return importlib.import_module(module_name)
+    def array_api(self) -> Any:
+        return array_api_compat.array_namespace(self.values)
 
     @property
     def dtype(self) -> DType:
