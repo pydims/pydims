@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2024 Dims contributors (https://github.com/pydray)
 from collections.abc import Hashable, Mapping
-from typing import Protocol
+from typing import Any, Protocol
+
+DType = Any  # Is the array API standard defining a DType type?
 
 
 class ArrayImplementation(Protocol):
@@ -41,9 +43,26 @@ class DimensionedArray:
         dims: tuple[Hashable, ...],
         unit: UnitImplementation | None,
     ):
+        if len(dims) != values.ndim:
+            raise ValueError(
+                f"Number of dimensions ({values.ndim}) does "
+                f"not match number of dims ({len(dims)})"
+            )
         self._values = values
         self._dims = dims
         self._unit = unit
+
+    @property
+    def dtype(self) -> DType:
+        return self._values.dtype
+
+    @property
+    def ndim(self) -> int:
+        return self._values.ndim
+
+    @property
+    def size(self) -> int:
+        return self._values.size
 
     @property
     def dims(self) -> tuple[Hashable, ...]:
@@ -56,3 +75,7 @@ class DimensionedArray:
     @property
     def sizes(self) -> Sizes:
         return Sizes(dims=self.dims, shape=self.shape)
+
+    @property
+    def values(self) -> ArrayImplementation:
+        return self._values
