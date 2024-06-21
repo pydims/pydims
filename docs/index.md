@@ -34,29 +34,42 @@ pip install pydims
 
 Note that the implementation is currently very incomplete.
 This is mainly a proof of concept.
+We give a couple of example combining some common Array implementations and units libraries:
 
-With NumPy:
+With NumPy and Pint:
 
 ```python
-import pydims as dims
 import numpy as np
+from pint import UnitRegistry
+import pydims as dims
 
-a = dims.DimensionedArray(dims=('x',), values=np.arange(10), unit=None)
-b = a[{'x': slice(2, 5)}]
+ureg = UnitRegistry()
+
+make = dims.CreationFunctions(np, ureg.Unit)
+a = make.ones(dims=('x', 'y'), shape=(10,10), unit='1/s')
+b = make.linspace('x', 0, 9000, 10, unit='m')
+c = a * b
+c = c.to(unit='km/s')
+result = c[{'x': slice(2, 7), 'y': slice(2, 4)}]
+result
 ```
 
 With Dask Array and AstroPy units:
 
 ```python
 from dask import array
-from astropy import units
+from astropy.units import Unit
 import pydims as dms
 
-values = array.ones((10, 10), chunks=(5, 5))
-a = dms.DimensionedArray(dims=('x', 'y'), values=values, unit=units.m)
-b = a * a
-c = b[{'x': slice(2, 7), 'y': slice(2, 4)}]
+make = dms.CreationFunctions(array, Unit)
+
+a = make.ones(dims=('x', 'y'), shape=(10,10), unit='1/s', chunks=(5,5))
+b = make.linspace('x', 0, 9000, 10, unit='m', chunks=(5,))
+c = a * b
+c = c.to(unit='km/s')
+c = c[{'x': slice(2, 7), 'y': slice(2, 4)}]
 result = dms.common.unary(c, values_op=lambda x: x.compute(), unit_op=lambda x: x)
+result
 ```
 
 ```{toctree}
