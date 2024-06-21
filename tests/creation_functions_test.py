@@ -13,6 +13,6 @@ def test_create_creation_functions_from_numpy():
     assert_identical(
         x,
         dms.DimensionedArray(
-            values=np.array([0.0, 0.5, 1.0]), dims=('x',), unit=StringUnit('m')
+            values=np.linspace(0, 1, 3), dims=('x',), unit=StringUnit('m')
         ),
     )

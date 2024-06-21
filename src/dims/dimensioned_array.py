@@ -134,16 +134,16 @@ class DimensionedArray:
     ) -> DimensionedArray:
         dims = _merge_dims(self.dims, other.dims)
         a = self.values
-        b = other.array_api.moveaxis(
-            other.values,
-            source=[other.dims.index(dim) for dim in dims if dim in other.dims],
-            destination=range(other.ndim),
-        )
+        b = other.values
         for dim in dims:
             if dim not in self.dims:
                 a = self.array_api.expand_dims(a, axis=dims.index(dim))
             if dim not in other.dims:
-                b = other.array_api.expand_dims(b, axis=dims.index(dim))
+                b = other.array_api.expand_dims(b, axis=0)
+        b_dims = (*(set(dims) - set(other.dims)), *other.dims)
+        b = other.array_api.permute_dims(
+            b, axes=tuple(dims.index(dim) for dim in b_dims)
+        )
         return DimensionedArray(
             values=values_op(a, b),
             dims=dims,
