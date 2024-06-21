@@ -2,8 +2,7 @@
 # Copyright (c) 2024 Dims contributors (https://github.com/pydims)
 from __future__ import annotations
 
-from collections.abc import Callable, Hashable, Iterator, Mapping
-from functools import cached_property
+from collections.abc import Hashable, Iterator, Mapping
 from typing import Any, Protocol
 
 import array_api_compat
@@ -69,7 +68,7 @@ class DimensionedArray:
             f"values={self.values}\nunit={self.unit}"
         )
 
-    @cached_property
+    @property
     def array_api(self) -> Any:
         return array_api_compat.array_namespace(self.values)
 
@@ -111,50 +110,6 @@ class DimensionedArray:
     def values(self) -> ArrayImplementation:
         return self._values
 
-    def elemwise_unary(
-        self,
-        values_op: Callable[[ArrayImplementation], ArrayImplementation],
-        unit_op: Callable[[UnitImplementation], UnitImplementation],
-    ) -> DimensionedArray:
-        return DimensionedArray(
-            values=values_op(self.values),
-            dims=self.dims,
-            unit=None if self.unit is None else unit_op(self.unit),
-        )
-
-    def elemwise_binary(
-        self,
-        /,
-        other: DimensionedArray,
-        *,
-        values_op: Callable[
-            [ArrayImplementation, ArrayImplementation], ArrayImplementation
-        ],
-        unit_op: Callable[[UnitImplementation, UnitImplementation], UnitImplementation],
-    ) -> DimensionedArray:
-        dims = _merge_dims(self.dims, other.dims)
-        a = self.values
-        b = other.values
-        for dim in dims:
-            if dim not in self.dims:
-                a = self.array_api.expand_dims(a, axis=dims.index(dim))
-            if dim not in other.dims:
-                b = other.array_api.expand_dims(b, axis=0)
-        b_dims = (*(set(dims) - set(other.dims)), *other.dims)
-        b = other.array_api.permute_dims(
-            b, axes=tuple(dims.index(dim) for dim in b_dims)
-        )
-        return DimensionedArray(
-            values=values_op(a, b),
-            dims=dims,
-            unit=(
-                None
-                # TODO do not mix unit with None
-                if self.unit is None and other.unit is None
-                else unit_op(self.unit, other.unit)
-            ),
-        )
-
     def __getitem__(
         self, key: int | slice | dict[Dim, int | slice]
     ) -> DimensionedArray:
@@ -172,22 +127,21 @@ class DimensionedArray:
         )
 
     def __neg__(self) -> DimensionedArray:
-        return self.elemwise_unary(
-            values_op=self.values.__class__.__neg__, unit_op=_unchanged_unit
+        from .common import elemwise_unary
+
+        return elemwise_unary(
+            self, values_op=self.values.__class__.__neg__, unit_op=_unchanged_unit
         )
 
     def __add__(self, other: DimensionedArray) -> DimensionedArray:
-        return self.elemwise_binary(
+        from .common import elemwise_binary
+
+        return elemwise_binary(
+            self,
             other,
             values_op=self.values.__class__.__add__,
             unit_op=_same_unit,
         )
-
-
-def _merge_dims(a: Dims, b: Dims) -> Dims:
-    """Favor order in a."""
-    # TODO Avoid transpose of b if possible
-    return a + tuple(dim for dim in b if dim not in a)
 
 
 def _unchanged_unit(unit: UnitImplementation) -> UnitImplementation:
@@ -207,6 +161,8 @@ def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
 
 
 def exp(x: DimensionedArray, /) -> DimensionedArray:
-    return x.elemwise_unary(
-        values_op=x.array_api.exp, unit_op=_unit_must_be_dimensionless
+    from .common import elemwise_unary
+
+    return elemwise_unary(
+        x, values_op=x.array_api.exp, unit_op=_unit_must_be_dimensionless
     )

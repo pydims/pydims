@@ -87,8 +87,8 @@ def test_add_raises_if_units_differ():
 def test_elemwise_binary_broadcasts_dims():
     xy = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
     yz = dms.DimensionedArray(values=array.ones((3, 4)), dims=('y', 'z'), unit=None)
-    result = xy.elemwise_binary(
-        yz, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
+    result = dms.common.elemwise_binary(
+        xy, yz, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
     )
     assert result.dims == ('x', 'y', 'z')
 
@@ -96,8 +96,8 @@ def test_elemwise_binary_broadcasts_dims():
 def test_elemwise_binary_transposes_dims():
     xy = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
     yx = dms.DimensionedArray(values=array.ones((3, 2)), dims=('y', 'x'), unit=None)
-    result = xy.elemwise_binary(
-        yx, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
+    result = dms.common.elemwise_binary(
+        xy, yx, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
     )
     assert result.dims == ('x', 'y')
 
@@ -107,7 +107,7 @@ def test_elemwise_binary_broadcasts_and_transposes_dims():
     yxz = dms.DimensionedArray(
         values=array.ones((3, 2, 4)), dims=('y', 'x', 'z'), unit=None
     )
-    result = xy.elemwise_binary(
-        yxz, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
+    result = dms.common.elemwise_binary(
+        xy, yxz, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
     )
     assert result.sizes == {'x': 2, 'y': 3, 'z': 4}
