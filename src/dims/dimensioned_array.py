@@ -120,6 +120,23 @@ class DimensionedArray:
     def values(self) -> ArrayImplementation:
         return self._values
 
+    def astype(self, dtype: DType, copy: bool = True) -> DimensionedArray:
+        return DimensionedArray(
+            values=self.array_api.astype(self.values, dtype, copy=copy),
+            dims=self.dims,
+            unit=self.unit,
+        )
+
+    def _to_unit(self, unit: Any, copy: bool = True) -> DimensionedArray:
+        scale = self.unit.to(unit)
+        if scale == 1 and not copy:
+            return self
+        return DimensionedArray(
+            values=self.values * scale,
+            dims=self.dims,
+            unit=self.unit_api.Unit(unit),
+        )
+
     def to(
         self, *, dtype: DType | None = None, unit: Any | None = None, copy: bool = True
     ) -> DimensionedArray:
@@ -140,18 +157,36 @@ class DimensionedArray:
         :
             New array with the requested dtype and/or unit.
         """
-        # TODO Use correct conversion order like Scipp
-        if dtype is not None:
-            values = self.array_api.astype(self.values, dtype, copy=copy)
+        if unit is None and dtype is None:
+            raise ValueError("Must provide dtype or unit or both")
+
+        if dtype is None:
+            return self._to_unit(unit, copy=copy)
+
+        if unit is None:
+            return self.astype(dtype, copy=copy)
+
+        # TODO Logic copied from Scipp. Probably not complete with the Array API dtypes
+        api = self.array_api
+        if dtype == api.float64:
+            convert_dtype_first = True
+        elif self.dtype == api.float64:
+            convert_dtype_first = False
+        elif dtype == api.float32:
+            convert_dtype_first = True
+        elif self.dtype == api.float32:
+            convert_dtype_first = False
+        elif self.dtype == api.int64 and dtype == api.int32:
+            convert_dtype_first = False
+        elif self.dtype == api.int32 and dtype == api.int64:
+            convert_dtype_first = True
         else:
-            values = self.array_api.asarray(self.values, copy=copy)
-        if unit is not None and (scale := self.unit.to(unit)) != 1:
-            values = values * scale
-        return DimensionedArray(
-            values=values,
-            dims=self.dims,
-            unit=self.unit if unit is None else self.unit_api.Unit(unit),
-        )
+            convert_dtype_first = True
+
+        if convert_dtype_first:
+            return self.to(dtype=dtype, copy=copy).to(unit=unit, copy=False)
+        else:
+            return self.to(unit=unit, copy=copy).to(dtype=dtype, copy=False)
 
     def __getitem__(
         self, key: int | slice | dict[Dim, int | slice]
