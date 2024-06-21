@@ -8,6 +8,8 @@ from typing import Any, Protocol
 
 import array_api_compat
 
+from . import units_api
+
 DType = Any  # Is the array API standard defining a DType type?
 
 
@@ -54,7 +56,6 @@ class DimensionedArray:
         values: ArrayImplementation,
         dims: Dims,
         unit: UnitImplementation | None,
-        unit_api: Any | None = None,
     ):
         if len(dims) != values.ndim:
             raise ValueError(
@@ -64,7 +65,6 @@ class DimensionedArray:
         self._values = values
         self._dims = tuple(dims)
         self._unit = unit
-        self.unit_api = unit_api
 
     def __str__(self) -> str:
         return (
@@ -76,10 +76,11 @@ class DimensionedArray:
     def array_api(self) -> Any:
         return array_api_compat.array_namespace(self.values)
 
-    # @property
-    # def unit_api(self) -> Any:
-    #    # Hack for now, consider need to define a standard for unit APIs
-    #    return self.unit.__class__
+    @property
+    def unit_api(self) -> Any:
+        return units_api.units_namespace(self.unit)
+        # Hack for now, consider need to define a standard for unit APIs
+        return self.unit.__class__
 
     @property
     def dtype(self) -> DType:
@@ -149,7 +150,7 @@ class DimensionedArray:
         return DimensionedArray(
             values=values,
             dims=self.dims,
-            unit=self.unit if unit is None else self.unit_api(unit),
+            unit=self.unit if unit is None else self.unit_api.Unit(unit),
         )
 
     def __getitem__(

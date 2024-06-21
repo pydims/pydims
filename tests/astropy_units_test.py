@@ -24,3 +24,10 @@ def test_unit_conversion():
     km = m.to(unit='km')
     assert km.unit == u.km
     assert all(km.values == m.values / 1000)
+
+
+def test_units_namespace_detects_astropy():
+    from dims.units_api import units_namespace
+
+    units = units_namespace(u.meter)
+    assert units is not None

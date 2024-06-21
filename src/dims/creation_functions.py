@@ -36,5 +36,4 @@ class CreationFunctions:
             values=self._array_api.linspace(start, stop, num, **kwargs),
             dims=(dim,),
             unit=None if unit is None else self._unit_api(unit),
-            unit_api=self._unit_api,
         )
