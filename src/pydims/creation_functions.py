@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .dimensioned_array import Dim, DimensionedArray, UnitImplementation
+from .dimensioned_array import Dim, DimensionedArray, Dims, Shape, UnitImplementation
 
 # TODO
 # For creation functions, add a helper that can be initialized with an array namespace,
@@ -35,5 +35,19 @@ class CreationFunctions:
         return DimensionedArray(
             values=self._array_api.linspace(start, stop, num, **kwargs),
             dims=(dim,),
+            unit=None if unit is None else self._unit_api(unit),
+        )
+
+    def ones(
+        self,
+        dims: Dims,
+        shape: Shape,
+        *,
+        unit: Any | UnitImplementation,
+        **kwargs: Any,  # dtype, device
+    ) -> DimensionedArray:
+        return DimensionedArray(
+            values=self._array_api.ones(shape, **kwargs),
+            dims=dims,
             unit=None if unit is None else self._unit_api(unit),
         )

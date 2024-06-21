@@ -22,6 +22,14 @@ def _is_pint_unit(unit: Any) -> bool:
     return issubclass(unit.__class__, pint.Unit)
 
 
+def is_scipp_unit(unit: Any) -> bool:
+    if 'scipp' not in sys.modules:
+        return False
+    import scipp
+
+    return isinstance(unit, scipp.units.Unit)
+
+
 def _is_string_unit(unit: Any) -> bool:
     from dims.string_unit import StringUnit
 
@@ -37,6 +45,10 @@ def units_namespace(unit: Any) -> Any:
         from .pint import PintsUnitsNamespace
 
         return PintsUnitsNamespace(unit._REGISTRY)
+    elif is_scipp_unit(unit):
+        from . import scipp
+
+        return scipp
     elif _is_string_unit(unit):
         from . import string_unit
 

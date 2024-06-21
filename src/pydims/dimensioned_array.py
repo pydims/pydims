@@ -29,10 +29,11 @@ class UnitImplementation(Protocol):
 # interpreted as a tuple of dimensions, not a single dimension.
 Dim = Hashable
 Dims = tuple[Dim, ...]
+Shape = tuple[int, ...]
 
 
 class Sizes(Mapping):
-    def __init__(self, dims: Dims, shape: tuple[int, ...]):
+    def __init__(self, dims: Dims, shape: Shape):
         self._data = dict(zip(dims, shape, strict=True))
 
     def __getitem__(self, key) -> int:
@@ -72,6 +73,16 @@ class DimensionedArray:
             f"values={self.values}\nunit={self.unit}"
         )
 
+    def _repr_html_(self) -> str:
+        return (
+            f"<table>"
+            f"<tr><td>dims</td><td>{self.dims}</td></tr>"
+            f"<tr><td>shape</td><td>{self.shape}</td></tr>"
+            f"<tr><td>values</td><td>{self.values}</td></tr>"
+            f"<tr><td>unit</td><td>{self.unit}</td></tr>"
+            f"</table>"
+        )
+
     @property
     def array_api(self) -> Any:
         return array_api_compat.array_namespace(self.values)
@@ -79,8 +90,6 @@ class DimensionedArray:
     @property
     def unit_api(self) -> Any:
         return units_api.units_namespace(self.unit)
-        # Hack for now, consider need to define a standard for unit APIs
-        return self.unit.__class__
 
     @property
     def dtype(self) -> DType:
@@ -109,8 +118,8 @@ class DimensionedArray:
         return self._unit
 
     @property
-    def shape(self) -> tuple[int, ...]:
-        return self._values.shape
+    def shape(self) -> Shape:
+        return tuple(self._values.shape)
 
     @property
     def sizes(self) -> Sizes:

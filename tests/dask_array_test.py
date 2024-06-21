@@ -38,3 +38,9 @@ def test_slice_chunked_dask_array():
     assert_identical(
         result, dms.DimensionedArray(values=np.ones((4, 2)), dims=dims, unit=None)
     )
+
+
+def test_can_create_chunked_using_CreationFunctions():
+    make = dms.CreationFunctions(da, None)
+    x = make.linspace('x', 0, 1, 4, unit=None, chunks=(2,))
+    assert x.values.chunks == ((2, 2),)
