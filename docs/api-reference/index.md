@@ -3,7 +3,7 @@
 ## Classes
 
 ```{eval-rst}
-.. currentmodule:: dims
+.. currentmodule:: pydims
 
 .. autosummary::
    :toctree: ../generated/classes

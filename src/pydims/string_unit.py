@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2024 Dims contributors (https://github.com/pydims)
+# Copyright (c) 2024 PyDims contributors (https://github.com/pydims)
 from __future__ import annotations
 
 from dataclasses import dataclass

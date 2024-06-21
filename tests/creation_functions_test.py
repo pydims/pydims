@@ -2,9 +2,9 @@
 # Copyright (c) 2024 PyDims contributors (https://github.com/pydims)
 import numpy as np
 
-import dims as dms
-from dims.string_unit import StringUnit
-from dims.testing import assert_identical
+import pydims as dms
+from pydims.string_unit import StringUnit
+from pydims.testing import assert_identical
 
 
 def test_create_creation_functions_from_numpy():

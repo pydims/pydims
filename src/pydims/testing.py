@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
-# Copyright (c) 2024 Dims contributors (https://github.com/pydims)
+# Copyright (c) 2024 PyDims contributors (https://github.com/pydims)
 
-import dims as dms
+import pydims as dms
 
 
 def assert_identical(a: dms.DimensionedArray, b: dms.DimensionedArray):

@@ -3,9 +3,9 @@
 import array_api_strict as array
 import pytest
 
-import dims as dms
-from dims.string_unit import StringUnit
-from dims.testing import assert_identical
+import pydims as dms
+from pydims.string_unit import StringUnit
+from pydims.testing import assert_identical
 
 
 @pytest.mark.parametrize('dims', [(), ('x',), ('x', 'y', 'z')])

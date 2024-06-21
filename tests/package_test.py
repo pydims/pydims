@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2024 Pydims contributors (https://github.com/pydims)
-import dims as pkg
+import pydims as pkg
 
 
 def test_has_version():

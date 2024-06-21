@@ -6,7 +6,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dims"
+name = "pydims"
 description = "Python arrays with named dimension and physical units"
 authors = [{ name = "Scipp contributors" }]
 license = { file = "LICENSE" }
@@ -34,9 +34,9 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-"Bug Tracker" = "https://github.com/pydims/dims/issues"
-"Documentation" = "https://pydims.github.io/dims"
-"Source" = "https://github.com/pydims/dims"
+"Bug Tracker" = "https://github.com/pydims/pydims/issues"
+"Documentation" = "https://pydims.github.io/pydims"
+"Source" = "https://github.com/pydims/pydims"
 
 [tool.setuptools_scm]
 
@@ -70,7 +70,7 @@ ignore = [
     "COM812", "COM819", "D206", "D300", "E111", "E114", "E117", "ISC001", "ISC002", "Q000", "Q001", "Q002", "Q003", "W191",
 ]
 fixable = ["I001", "B010"]
-isort.known-first-party = ["dims"]
+isort.known-first-party = ["pydims"]
 pydocstyle.convention = "numpy"
 
 [tool.ruff.lint.per-file-ignores]

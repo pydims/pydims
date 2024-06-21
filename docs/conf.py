@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath('.'))
 logger = logging.getLogger(__name__)
 
 # General information about the project.
-project = 'Dims'
+project = 'PyDims'
 copyright = '2024 Scipp contributors'
 author = 'Scipp contributors'
 
@@ -96,7 +96,7 @@ master_doc = 'index'
 #
 
 try:
-    release = get_version("dims")
+    release = get_version("pydims")
     version = ".".join(release.split('.')[:3])  # CalVer
 except PackageNotFoundError:
     logger.info(
@@ -147,19 +147,19 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/pydims/dims",
+            "url": "https://github.com/pydims/pydims",
             "icon": "fa-brands fa-github",
             "type": "fontawesome",
         },
         {
             "name": "PyPI",
-            "url": "https://pypi.org/project/dims/",
+            "url": "https://pypi.org/project/pydims/",
             "icon": "fa-brands fa-python",
             "type": "fontawesome",
         },
         {
             "name": "Conda",
-            "url": "https://anaconda.org/pydims/dims",
+            "url": "https://anaconda.org/pydims/pydims",
             "icon": "fa-custom fa-anaconda",
             "type": "fontawesome",
         },
@@ -174,7 +174,7 @@ html_sidebars = {
     "**": ["sidebar-nav-bs", "page-toc"],
 }
 
-html_title = "Dims"
+html_title = "PyDims"
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.ico"
 
@@ -188,7 +188,7 @@ html_js_files = ["anaconda-icon.js"]
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'dimsdoc'
+htmlhelp_basename = 'pydimsdoc'
 
 # -- Options for Matplotlib in notebooks ----------------------------------
 

@@ -3,8 +3,8 @@
 import array_api_strict as array
 import astropy.units as u
 
-import dims as dms
-from dims.testing import assert_identical
+import pydims as dms
+from pydims.testing import assert_identical
 
 make = dms.CreationFunctions(array, u.Unit)
 
@@ -27,7 +27,7 @@ def test_unit_conversion():
 
 
 def test_units_namespace_detects_astropy():
-    from dims.units_api import units_namespace
+    from pydims.units_api import units_namespace
 
     units = units_namespace(u.meter)
     assert units is not None

@@ -2,8 +2,8 @@
 # Copyright (c) 2024 PyDims contributors (https://github.com/pydims)
 import numpy as np
 
-import dims as dms
-from dims.testing import assert_identical
+import pydims as dms
+from pydims.testing import assert_identical
 
 
 def test_all():

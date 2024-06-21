@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-import dims as dms
-from dims.testing import assert_identical
+import pydims as dms
+from pydims.testing import assert_identical
 
 
 def test_concat():

@@ -1,5 +1,5 @@
 package:
-  name: dims
+  name: pydims
 
   version: {{ GIT_DESCRIBE_TAG }}
 
@@ -25,7 +25,7 @@ requirements:
 
 test:
   imports:
-    - dims
+    - pydims
   requires:
     - pytest
   source_files:
@@ -41,9 +41,9 @@ build:
     - python -m pip install .
 
 about:
-  home: https://github.com/pydims/dims
+  home: https://github.com/pydims/pydims
   license: BSD-3-Clause
   summary: Python arrays with named dimension and physical units
   description: Python arrays with named dimension and physical units
-  dev_url: https://github.com/pydims/dims
-  doc_url: https://pydims.github.io/dims
+  dev_url: https://github.com/pydims/pydims
+  doc_url: https://pydims.github.io/pydims

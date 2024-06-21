@@ -7,7 +7,7 @@ min_python: '3.12'
 namespace_package: ''
 nightly_deps: ''
 orgname: pydims
-prettyname: Dims
-projectname: dims
+prettyname: PyDims
+projectname: pydims
 related_projects: ''
 year: 2024
