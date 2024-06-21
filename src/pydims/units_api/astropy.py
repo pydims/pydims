@@ -7,3 +7,7 @@ import astropy.units as _units
 dimensionless = _units.dimensionless_unscaled
 
 Unit = _units.Unit
+
+
+def get_scale(*, src, dst) -> float:
+    return src.to(dst)

@@ -34,7 +34,9 @@ def units_namespace(unit: Any) -> Any:
 
         return astropy
     elif _is_pint_unit(unit):
-        return unit._REGISTRY
+        from .pint import PintsUnitsNamespace
+
+        return PintsUnitsNamespace(unit._REGISTRY)
     elif _is_string_unit(unit):
         from . import string_unit
 

@@ -128,7 +128,7 @@ class DimensionedArray:
         )
 
     def _to_unit(self, unit: Any, copy: bool = True) -> DimensionedArray:
-        scale = self.unit.to(unit)
+        scale = self.unit_api.get_scale(src=self.unit, dst=unit)
         if scale == 1 and not copy:
             return self
         return DimensionedArray(
