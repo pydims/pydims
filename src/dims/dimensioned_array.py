@@ -50,9 +50,11 @@ class DimensionedArray:
 
     def __init__(
         self,
+        *,
         values: ArrayImplementation,
         dims: Dims,
         unit: UnitImplementation | None,
+        unit_api: Any | None = None,
     ):
         if len(dims) != values.ndim:
             raise ValueError(
@@ -62,6 +64,7 @@ class DimensionedArray:
         self._values = values
         self._dims = tuple(dims)
         self._unit = unit
+        self.unit_api = unit_api
 
     def __str__(self) -> str:
         return (
@@ -72,6 +75,11 @@ class DimensionedArray:
     @property
     def array_api(self) -> Any:
         return array_api_compat.array_namespace(self.values)
+
+    # @property
+    # def unit_api(self) -> Any:
+    #    # Hack for now, consider need to define a standard for unit APIs
+    #    return self.unit.__class__
 
     @property
     def dtype(self) -> DType:
@@ -110,6 +118,39 @@ class DimensionedArray:
     @property
     def values(self) -> ArrayImplementation:
         return self._values
+
+    def to(
+        self, *, dtype: DType | None = None, unit: Any | None = None, copy: bool = True
+    ) -> DimensionedArray:
+        """
+        Convert to a new dtype and/or unit.
+
+        Parameters
+        ----------
+        dtype:
+            New dtype, None if no conversion is needed.
+        unit:
+            New unit, None if no conversion is needed.
+        copy:
+            If True, a copy of the values is made, even if no conversion is needed.
+
+        Returns
+        -------
+        :
+            New array with the requested dtype and/or unit.
+        """
+        # TODO Use correct conversion order like Scipp
+        if dtype is not None:
+            values = self.array_api.astype(self.values, dtype, copy=copy)
+        else:
+            values = self.array_api.asarray(self.values, copy=copy)
+        if unit is not None and (scale := self.unit.to(unit)) != 1:
+            values = values * scale
+        return DimensionedArray(
+            values=values,
+            dims=self.dims,
+            unit=self.unit if unit is None else self.unit_api(unit),
+        )
 
     def __getitem__(
         self, key: int | slice | dict[Dim, int | slice]

@@ -6,9 +6,10 @@ import astropy.units as u
 import dims as dms
 from dims.testing import assert_identical
 
+make = dms.CreationFunctions(array, u.Unit)
+
 
 def test_from_astropy_units():
-    make = dms.CreationFunctions(array, u.Unit)
     x = make.linspace('x', 0, 1, 3, unit='m')
     assert_identical(
         x,
@@ -16,3 +17,10 @@ def test_from_astropy_units():
     )
     assert (x + x).unit == u.meter
     assert (x * x).unit == u.meter**2
+
+
+def test_unit_conversion():
+    m = make.linspace('x', 0, 1, 3, unit='m')
+    km = m.to(unit='km')
+    assert km.unit == u.km
+    assert all(km.values == m.values / 1000)

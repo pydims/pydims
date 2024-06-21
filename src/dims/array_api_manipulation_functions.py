@@ -43,7 +43,7 @@ def concat(
     values = [arr.values for arr in arrays]
     xp = array_api_compat.array_namespace(*values)
     return DimensionedArray(
-        xp.concat(values, axis=axis), dims=first.dims, unit=first.unit
+        values=xp.concat(values, axis=axis), dims=first.dims, unit=first.unit
     )
 
 
@@ -88,7 +88,9 @@ def stack(
     dims.insert(axis if axis >= 0 else first.ndim + 1 + axis, dim)
     values = [arr.values for arr in arrays]
     xp = array_api_compat.array_namespace(*values)
-    return DimensionedArray(xp.stack(values, axis=axis), dims=dims, unit=first.unit)
+    return DimensionedArray(
+        values=xp.stack(values, axis=axis), dims=dims, unit=first.unit
+    )
 
 
 __all__ = ['concat', 'reshape', 'stack']

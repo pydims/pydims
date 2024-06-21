@@ -29,7 +29,9 @@ def all(x: DimensionedArray, /, *, dim: Dim | Dims | None = None) -> Dimensioned
         raise ValueError("Unit is not supported for logical operation")
     axis, dims = _axis_dims_for_reduce(x, dim)
     # boolean output has unit=None, input unit is discarded
-    return DimensionedArray(x.array_api.all(x.values, axis=axis), dims=dims, unit=None)
+    return DimensionedArray(
+        values=x.array_api.all(x.values, axis=axis), dims=dims, unit=None
+    )
 
 
 def any(x: DimensionedArray, /, *, dim: Dim | Dims | None = None) -> DimensionedArray:
@@ -53,7 +55,9 @@ def any(x: DimensionedArray, /, *, dim: Dim | Dims | None = None) -> Dimensioned
         raise ValueError("Unit is not supported for logical operation")
     axis, dims = _axis_dims_for_reduce(x, dim)
     # boolean output has unit=None, input unit is discarded
-    return DimensionedArray(x.array_api.any(x.values, axis=axis), dims=dims, unit=None)
+    return DimensionedArray(
+        values=x.array_api.any(x.values, axis=axis), dims=dims, unit=None
+    )
 
 
 def _axis_dims_for_reduce(x, dim):
