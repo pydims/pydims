@@ -31,3 +31,4 @@ def test_units_namespace_detects_astropy():
 
     units = units_namespace(u.meter)
     assert units is not None
+    assert units.Unit('m') == u.meter
