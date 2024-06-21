@@ -2,6 +2,7 @@
 # Copyright (c) 2024 Dims contributors (https://github.com/pydims)
 from __future__ import annotations
 
+import operator
 from collections.abc import Hashable, Iterator, Mapping
 from typing import Any, Protocol
 
@@ -141,6 +142,16 @@ class DimensionedArray:
             other,
             values_op=self.values.__class__.__add__,
             unit_op=_same_unit,
+        )
+
+    def __mul__(self, other: DimensionedArray) -> DimensionedArray:
+        from .common import elemwise_binary
+
+        return elemwise_binary(
+            self,
+            other,
+            values_op=self.values.__class__.__mul__,
+            unit_op=operator.mul,
         )
 
 
