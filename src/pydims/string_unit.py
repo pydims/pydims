@@ -11,6 +11,5 @@ class StringUnit:
 
     value: str = ''
 
-    @staticmethod
-    def dimensionless() -> StringUnit:
-        return StringUnit()
+    def __mul__(self, other: StringUnit) -> StringUnit:
+        return StringUnit(f'({self.value})*({other.value})')

@@ -31,7 +31,7 @@ def is_scipp_unit(unit: Any) -> bool:
 
 
 def _is_string_unit(unit: Any) -> bool:
-    from dims.string_unit import StringUnit
+    from pydims.string_unit import StringUnit
 
     return issubclass(unit.__class__, StringUnit)
 

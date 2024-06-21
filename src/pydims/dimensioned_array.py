@@ -252,7 +252,7 @@ def _same_unit(a: UnitImplementation, b: UnitImplementation) -> UnitImplementati
 
 
 def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
-    if unit != unit.dimensionless:
+    if unit * unit != unit:
         raise ValueError("Unit must be dimensionless")
     return unit
 
