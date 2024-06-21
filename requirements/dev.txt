@@ -28,10 +28,6 @@ async-lru==2.0.4
     # via jupyterlab
 cffi==1.16.0
     # via argon2-cffi-bindings
-click==8.1.7
-    # via
-    #   pip-compile-multi
-    #   pip-tools
 copier==9.2.0
     # via -r dev.in
 dunamai==1.21.1

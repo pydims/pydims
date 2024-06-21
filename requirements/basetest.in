@@ -3,6 +3,7 @@
 
 array-api-strict
 astropy
+dask
 numpy
 pytest
 scipp

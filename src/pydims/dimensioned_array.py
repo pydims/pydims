@@ -205,9 +205,9 @@ class DimensionedArray:
         )
 
     def __neg__(self) -> DimensionedArray:
-        from .common import elemwise_unary
+        from .common import unary
 
-        return elemwise_unary(
+        return unary(
             self, values_op=self.values.__class__.__neg__, unit_op=_unchanged_unit
         )
 
@@ -249,8 +249,6 @@ def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
 
 
 def exp(x: DimensionedArray, /) -> DimensionedArray:
-    from .common import elemwise_unary
+    from .common import unary
 
-    return elemwise_unary(
-        x, values_op=x.array_api.exp, unit_op=_unit_must_be_dimensionless
-    )
+    return unary(x, values_op=x.array_api.exp, unit_op=_unit_must_be_dimensionless)

@@ -18,7 +18,7 @@ def _merge_dims(a: Dims, b: Dims) -> Dims:
     return a + tuple(dim for dim in b if dim not in a)
 
 
-def elemwise_unary(
+def unary(
     x: DimensionedArray,
     values_op: Callable[[ArrayImplementation], ArrayImplementation],
     unit_op: Callable[[UnitImplementation], UnitImplementation],
