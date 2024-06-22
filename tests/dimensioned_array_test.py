@@ -213,3 +213,14 @@ def test_elemwise_binary_broadcasts_and_transposes_dims():
         xy, yxz, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
     )
     assert result.sizes == {'x': 2, 'y': 3, 'z': 4}
+
+
+def test_elemwise_binary_xyz_zx():
+    xyz = dms.DimensionedArray(
+        values=array.ones((2, 3, 4)), dims=('x', 'y', 'z'), unit=None
+    )
+    zx = dms.DimensionedArray(values=array.ones((4, 2)), dims=('z', 'x'), unit=None)
+    result = dms.common.elemwise_binary(
+        xyz, zx, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
+    )
+    assert result.sizes == {'x': 2, 'y': 3, 'z': 4}

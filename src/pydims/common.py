@@ -49,7 +49,7 @@ def elemwise_binary(
         if dim not in y.dims:
             b = y.array_api.expand_dims(b, axis=0)
     b_dims = (*(set(dims) - set(y.dims)), *y.dims)
-    b = y.array_api.permute_dims(b, axes=tuple(dims.index(dim) for dim in b_dims))
+    b = y.array_api.permute_dims(b, axes=tuple(b_dims.index(dim) for dim in dims))
     # TODO What if y.__class__ != x.__class__?
     return x.__class__(
         values=values_op(a, b),
