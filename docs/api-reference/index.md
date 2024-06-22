@@ -26,6 +26,8 @@
    any
    exp
    concat
+   flatten
+   fold
    reshape
    stack
 ```
