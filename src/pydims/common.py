@@ -6,7 +6,7 @@ from collections.abc import Callable
 
 from .dimensioned_array import (
     ArrayImplementation,
-    DimensionedArray,
+    DimArr,
     Dims,
     UnitImplementation,
 )
@@ -19,11 +19,11 @@ def _merge_dims(a: Dims, b: Dims) -> Dims:
 
 
 def unary(
-    x: DimensionedArray,
+    x: DimArr,
     values_op: Callable[[ArrayImplementation], ArrayImplementation],
     unit_op: Callable[[UnitImplementation], UnitImplementation],
-) -> DimensionedArray:
-    return DimensionedArray(
+) -> DimArr:
+    return x.__class__(
         values=values_op(x.values),
         dims=x.dims,
         unit=None if x.unit is None else unit_op(x.unit),
@@ -31,15 +31,15 @@ def unary(
 
 
 def elemwise_binary(
-    x,
+    x: DimArr,
     /,
-    y: DimensionedArray,
+    y: DimArr,
     *,
     values_op: Callable[
         [ArrayImplementation, ArrayImplementation], ArrayImplementation
     ],
     unit_op: Callable[[UnitImplementation, UnitImplementation], UnitImplementation],
-) -> DimensionedArray:
+) -> DimArr:
     dims = _merge_dims(x.dims, y.dims)
     a = x.values
     b = y.values
@@ -50,7 +50,8 @@ def elemwise_binary(
             b = y.array_api.expand_dims(b, axis=0)
     b_dims = (*(set(dims) - set(y.dims)), *y.dims)
     b = y.array_api.permute_dims(b, axes=tuple(dims.index(dim) for dim in b_dims))
-    return DimensionedArray(
+    # TODO What if y.__class__ != x.__class__?
+    return x.__class__(
         values=values_op(a, b),
         dims=dims,
         unit=(

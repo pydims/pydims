@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import operator
 from collections.abc import Hashable, Iterator, Mapping
-from typing import Any, Protocol
+from typing import Any, Protocol, TypeVar
 
 import array_api_compat
 
@@ -44,6 +44,9 @@ class Sizes(Mapping):
 
     def __len__(self) -> int:
         return len(self._data)
+
+
+DimArr = TypeVar('DimArr', bound='DimensionedArray')
 
 
 class DimensionedArray:
@@ -129,26 +132,30 @@ class DimensionedArray:
     def values(self) -> ArrayImplementation:
         return self._values
 
-    def astype(self, dtype: DType, copy: bool = True) -> DimensionedArray:
-        return DimensionedArray(
+    def astype(self: DimArr, dtype: DType, copy: bool = True) -> DimArr:
+        return self.__class__(
             values=self.array_api.astype(self.values, dtype, copy=copy),
             dims=self.dims,
             unit=self.unit,
         )
 
-    def _to_unit(self, unit: Any, copy: bool = True) -> DimensionedArray:
+    def _to_unit(self: DimArr, unit: Any, copy: bool = True) -> DimArr:
         scale = self.units_api.get_scale(src=self.unit, dst=unit)
         if scale == 1 and not copy:
             return self
-        return DimensionedArray(
+        return self.__class__(
             values=self.values * scale,
             dims=self.dims,
             unit=self.units_api.Unit(unit),
         )
 
     def to(
-        self, *, dtype: DType | None = None, unit: Any | None = None, copy: bool = True
-    ) -> DimensionedArray:
+        self: DimArr,
+        *,
+        dtype: DType | None = None,
+        unit: Any | None = None,
+        copy: bool = True,
+    ) -> DimArr:
         """
         Convert to a new dtype and/or unit.
 
@@ -197,9 +204,7 @@ class DimensionedArray:
         else:
             return self.to(unit=unit, copy=copy).to(dtype=dtype, copy=False)
 
-    def __getitem__(
-        self, key: int | slice | dict[Dim, int | slice]
-    ) -> DimensionedArray:
+    def __getitem__(self: DimArr, key: int | slice | dict[Dim, int | slice]) -> DimArr:
         if not isinstance(key, Mapping):
             if self.ndim != 1:
                 raise DimensionError("Only 1-D arrays can be indexed without dims")
@@ -209,18 +214,16 @@ class DimensionedArray:
         values_key = tuple(key.pop(dim, slice(None)) for dim in self.dims)
         if key:
             raise DimensionError(f"Unknown dimensions: {tuple(key.keys())}")
-        return DimensionedArray(
-            values=self.values[values_key], dims=dims, unit=self.unit
-        )
+        return self.__class__(values=self.values[values_key], dims=dims, unit=self.unit)
 
-    def __neg__(self) -> DimensionedArray:
+    def __neg__(self: DimArr) -> DimArr:
         from .common import unary
 
         return unary(
             self, values_op=self.values.__class__.__neg__, unit_op=_unchanged_unit
         )
 
-    def __add__(self, other: DimensionedArray) -> DimensionedArray:
+    def __add__(self: DimArr, other: DimArr) -> DimArr:
         from .common import elemwise_binary
 
         return elemwise_binary(
@@ -230,7 +233,7 @@ class DimensionedArray:
             unit_op=_same_unit,
         )
 
-    def __mul__(self, other: DimensionedArray) -> DimensionedArray:
+    def __mul__(self: DimArr, other: DimArr) -> DimArr:
         from .common import elemwise_binary
 
         return elemwise_binary(
@@ -257,7 +260,7 @@ def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
     return unit
 
 
-def exp(x: DimensionedArray, /) -> DimensionedArray:
+def exp(x: DimArr, /) -> DimArr:
     from .common import unary
 
     return unary(x, values_op=x.array_api.exp, unit_op=_unit_must_be_dimensionless)

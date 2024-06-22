@@ -70,6 +70,13 @@ def test_getitem_order_in_dict_does_not_matter():
     assert_identical(da[{'x': 1, 'y': 0}], expected)
 
 
+def test_getitem_preserves_unit():
+    da = dms.DimensionedArray(
+        values=array.ones((2, 3)), dims=('x', 'y'), unit=Unit('m')
+    )
+    assert da[{'x': 0}].unit == Unit('m')
+
+
 @pytest.mark.parametrize('unit', [None, Unit(), Unit('m')])
 def test_neg(unit: Unit | None):
     da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=unit)
