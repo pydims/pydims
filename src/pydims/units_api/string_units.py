@@ -2,8 +2,6 @@
 # Copyright (c) 2024 PyDims contributors (https://github.com/pydims)
 from __future__ import annotations
 
-from pydims.string_unit import StringUnit as _Unit
+from pydims.string_units import Unit
 
-dimensionless = _Unit()
-
-Unit = _Unit
+dimensionless = Unit()

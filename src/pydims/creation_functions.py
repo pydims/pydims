@@ -2,6 +2,7 @@
 # Copyright (c) 2024 PyDims contributors (https://github.com/pydims)
 from __future__ import annotations
 
+from types import ModuleType
 from typing import Any
 
 from array_api_compat import array_namespace
@@ -20,10 +21,9 @@ _default_unit = object()
 
 
 class CreationFunctions:
-    def __init__(self, array_api: Any, unit_api: Any):
-        # TODO What should we pass here? Modules? A Unit class?
-        self._array_api = array_namespace(array_api.zeros(0))
-        self._unit_api = None if unit_api is None else units_namespace(unit_api(''))
+    def __init__(self, array: ModuleType, units: ModuleType | None):
+        self._array_api = array_namespace(array.zeros(0))
+        self._unit_api = None if units is None else units_namespace(units.Unit(''))
 
     def _maybe_unit(
         self, unit: Any | UnitImplementation | None, values: ArrayImplementation

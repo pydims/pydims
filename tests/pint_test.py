@@ -6,7 +6,7 @@ from pint import UnitRegistry as ureg
 import pydims as dms
 from pydims.testing import assert_identical
 
-make = dms.CreationFunctions(array, ureg.Unit)
+make = dms.CreationFunctions(array=array, units=ureg)
 
 
 def test_create_with_pint_unit():

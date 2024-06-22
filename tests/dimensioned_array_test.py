@@ -4,7 +4,7 @@ import array_api_strict as array
 import pytest
 
 import pydims as dms
-from pydims.string_unit import StringUnit
+from pydims.string_units import Unit
 from pydims.testing import assert_identical
 
 
@@ -55,8 +55,8 @@ def test_getitem_2d_with_dims():
     )
 
 
-@pytest.mark.parametrize('unit', [None, StringUnit(), StringUnit('m')])
-def test_neg(unit: StringUnit | None):
+@pytest.mark.parametrize('unit', [None, Unit(), Unit('m')])
+def test_neg(unit: Unit | None):
     da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=unit)
     result = -da
     assert_identical(
@@ -67,7 +67,7 @@ def test_neg(unit: StringUnit | None):
 
 def test_exp_raises_if_unit_is_not_dimensionless():
     da = dms.DimensionedArray(
-        values=array.ones((2, 3)), dims=('x', 'y'), unit=StringUnit('m')
+        values=array.ones((2, 3)), dims=('x', 'y'), unit=Unit('m')
     )
     with pytest.raises(ValueError, match="Unit must be dimensionless"):
         dms.exp(da)
@@ -75,10 +75,10 @@ def test_exp_raises_if_unit_is_not_dimensionless():
 
 def test_add_raises_if_units_differ():
     da1 = dms.DimensionedArray(
-        values=array.ones((2, 3)), dims=('x', 'y'), unit=StringUnit('m')
+        values=array.ones((2, 3)), dims=('x', 'y'), unit=Unit('m')
     )
     da2 = dms.DimensionedArray(
-        values=array.ones((2, 3)), dims=('x', 'y'), unit=StringUnit('s')
+        values=array.ones((2, 3)), dims=('x', 'y'), unit=Unit('s')
     )
     with pytest.raises(ValueError, match="Units must be identical"):
         da1 + da2

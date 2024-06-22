@@ -6,7 +6,7 @@ from scipp import units
 import pydims as dms
 from pydims.testing import assert_identical
 
-make = dms.CreationFunctions(array, units.Unit)
+make = dms.CreationFunctions(array=array, units=units)
 
 
 def test_create_with_scipp_unit():

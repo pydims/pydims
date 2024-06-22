@@ -31,9 +31,9 @@ def is_scipp_unit(unit: Any) -> bool:
 
 
 def _is_string_unit(unit: Any) -> bool:
-    from pydims.string_unit import StringUnit
+    from pydims.string_units import Unit
 
-    return issubclass(unit.__class__, StringUnit)
+    return issubclass(unit.__class__, Unit)
 
 
 def units_namespace(unit: Any) -> Any:
@@ -50,9 +50,9 @@ def units_namespace(unit: Any) -> Any:
 
         return scipp
     elif _is_string_unit(unit):
-        from . import string_unit
+        from . import string_units
 
-        return string_unit
+        return string_units
 
 
 __all__ = ['units_namespace']

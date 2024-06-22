@@ -6,10 +6,10 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class StringUnit:
+class Unit:
     """Very simple unit class that stores a unit as a string."""
 
     value: str = ''
 
-    def __mul__(self, other: StringUnit) -> StringUnit:
-        return StringUnit(f'({self.value})*({other.value})')
+    def __mul__(self, other: Unit) -> Unit:
+        return Unit(f'({self.value})*({other.value})')
