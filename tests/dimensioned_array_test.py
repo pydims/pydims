@@ -27,6 +27,12 @@ def test_getitem_no_dim_raises_if_not_1d():
         _ = da[0]
 
 
+def test_getitem_raises_if_dim_not_in_dims():
+    da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
+    with pytest.raises(dms.DimensionError, match=r"Unknown dimensions: \('z',\)"):
+        _ = da[{'z': 0}]
+
+
 def test_getitem_1d_no_dim():
     da = dms.DimensionedArray(dims=('x',), values=array.arange(2.0), unit=None)
     assert_identical(
@@ -53,6 +59,15 @@ def test_getitem_2d_with_dims():
         da[{'x': 1, 'y': 1}],
         dms.DimensionedArray(dims=(), values=array.asarray(4), unit=None),
     )
+
+
+def test_getitem_order_in_dict_does_not_matter():
+    da = dms.DimensionedArray(
+        values=array.reshape(array.arange(6), (2, 3)), dims=('x', 'y'), unit=None
+    )
+    expected = dms.DimensionedArray(dims=(), values=array.asarray(3), unit=None)
+    assert_identical(da[{'y': 0, 'x': 1}], expected)
+    assert_identical(da[{'x': 1, 'y': 0}], expected)
 
 
 @pytest.mark.parametrize('unit', [None, Unit(), Unit('m')])

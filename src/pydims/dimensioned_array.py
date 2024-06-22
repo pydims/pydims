@@ -200,7 +200,7 @@ class DimensionedArray:
     def __getitem__(
         self, key: int | slice | dict[Dim, int | slice]
     ) -> DimensionedArray:
-        if isinstance(key, int | slice):
+        if not isinstance(key, Mapping):
             if self.ndim != 1:
                 raise DimensionError("Only 1-D arrays can be indexed without dims")
             key = {self.dim: key}
@@ -208,7 +208,7 @@ class DimensionedArray:
         dims = tuple(dim for dim in self.dims if not isinstance(key.get(dim), int))
         values_key = tuple(key.pop(dim, slice(None)) for dim in self.dims)
         if key:
-            raise ValueError(f"Unknown dimensions: {key.keys()}")
+            raise DimensionError(f"Unknown dimensions: {tuple(key.keys())}")
         return DimensionedArray(
             values=self.values[values_key], dims=dims, unit=self.unit
         )
