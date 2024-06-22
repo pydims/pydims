@@ -12,7 +12,7 @@ except importlib.metadata.PackageNotFoundError:
 del importlib
 
 from .creation_functions import CreationFunctions
-from .dimensioned_array import DimensionedArray, DimensionError, exp
+from .dimensioned_array import DimensionedArray, DimensionError, exp, UnitsError
 from .array_api_manipulation_functions import concat, flatten, fold, reshape, stack
 from .array_api_utility_functions import all, any
 
@@ -28,4 +28,5 @@ __all__ = [
     'concat',
     'reshape',
     'stack',
+    'UnitsError',
 ]

@@ -17,6 +17,10 @@ class DimensionError(Exception):
     pass
 
 
+class UnitsError(Exception):
+    pass
+
+
 class ArrayImplementation(Protocol):
     """Array of values following the Python array API standard."""
 
@@ -204,7 +208,9 @@ class DimensionedArray:
         else:
             return self.to(unit=unit, copy=copy).to(dtype=dtype, copy=False)
 
-    def __getitem__(self: DimArr, key: int | slice | dict[Dim, int | slice]) -> DimArr:
+    def _parse_key(
+        self, key: int | slice | dict[Dim, int | slice]
+    ) -> tuple[Dims, Shape]:
         if not isinstance(key, Mapping):
             if self.ndim != 1:
                 raise DimensionError("Only 1-D arrays can be indexed without dims")
@@ -214,7 +220,40 @@ class DimensionedArray:
         values_key = tuple(key.pop(dim, slice(None)) for dim in self.dims)
         if key:
             raise DimensionError(f"Unknown dimensions: {tuple(key.keys())}")
+        return dims, values_key
+
+    def __getitem__(self: DimArr, key: int | slice | dict[Dim, int | slice]) -> DimArr:
+        dims, values_key = self._parse_key(key)
         return self.__class__(values=self.values[values_key], dims=dims, unit=self.unit)
+
+    def __setitem__(
+        self: DimArr, key: int | slice | dict[Dim, int | slice], array: DimArr
+    ):
+        """
+        Set a sub-array identified by key to the values of array.
+
+        The array to set will be automatically transposed and/or broadcast to match the
+        dimensions of the sub-array, using the named dimensions.
+
+        Parameters
+        ----------
+        key:
+            Index or slice or dictionary of dimension names and indices.
+        array:
+            Array to set.
+        """
+        dims, values_key = self._parse_key(key)
+        values = array.values
+        for dim in dims:
+            if dim not in array.dims:
+                values = array.array_api.expand_dims(values, axis=0)
+        if any(dim not in dims for dim in array.dims):
+            raise DimensionError("Value has extra dimensions")
+        if array.unit != self.unit:
+            raise UnitsError("Units must be identical")
+        new_dims = (*(set(dims) - set(array.dims)), *array.dims)
+        axes = tuple(new_dims.index(dim) for dim in dims)
+        self.values[values_key] = array.array_api.permute_dims(values, axes=axes)
 
     def __neg__(self: DimArr) -> DimArr:
         from .common import unary

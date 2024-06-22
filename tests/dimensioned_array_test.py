@@ -77,6 +77,86 @@ def test_getitem_preserves_unit():
     assert da[{'x': 0}].unit == Unit('m')
 
 
+def test_setitem_raises_if_value_has_extra_dims():
+    da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
+    with pytest.raises(dms.DimensionError, match="Value has extra dimensions"):
+        da[{'x': 0}] = dms.DimensionedArray(
+            values=array.zeros((2, 3, 4)), dims=('x', 'y', 'z'), unit=None
+        )
+
+
+def test_setitem_transposes_automatically():
+    da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
+    da[{'x': slice(None)}] = dms.DimensionedArray(
+        values=array.reshape(array.arange(6), (3, 2)), dims=('y', 'x'), unit=None
+    )
+    assert_identical(
+        da,
+        dms.DimensionedArray(
+            values=array.asarray([[0.0, 2.0, 4.0], [1.0, 3.0, 5.0]]),
+            dims=('x', 'y'),
+            unit=None,
+        ),
+    )
+
+
+def test_setitem_raises_if_sizes_do_not_match():
+    da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
+    with pytest.raises(
+        ValueError,
+        match="could not broadcast input array from shape",
+    ):
+        da[{'x': slice(None)}] = dms.DimensionedArray(
+            values=array.ones((3, 3)), dims=('x', 'y'), unit=None
+        )
+
+
+def test_setitem_raises_if_units_differ():
+    da1 = dms.DimensionedArray(
+        values=array.ones((2, 3)), dims=('x', 'y'), unit=Unit('m')
+    )
+    da2 = dms.DimensionedArray(
+        values=array.ones((2, 3)), dims=('x', 'y'), unit=Unit('s')
+    )
+    with pytest.raises(dms.UnitsError, match="Units must be identical"):
+        da1[{'x': slice(None)}] = da2
+
+
+def test_setitem_can_broadcast():
+    da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
+    da[{'x': 0}] = dms.DimensionedArray(values=array.zeros(()), dims=(), unit=None)
+    assert_identical(
+        da,
+        dms.DimensionedArray(
+            values=array.asarray([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0]]),
+            dims=('x', 'y'),
+            unit=None,
+        ),
+    )
+
+
+def test_setitem_broadcasts_and_transposed_simultaneously():
+    da = dms.DimensionedArray(
+        values=array.ones((2, 3, 4)), dims=('x', 'y', 'z'), unit=None
+    )
+    da[{'x': slice(None)}] = dms.DimensionedArray(
+        values=array.reshape(array.arange(8), (4, 2)), dims=('z', 'x'), unit=None
+    )
+    assert_identical(
+        da,
+        dms.DimensionedArray(
+            dims=('x', 'y', 'z'),
+            values=array.asarray(
+                [
+                    [[0.0, 2.0, 4.0, 6.0], [0.0, 2.0, 4.0, 6.0], [0.0, 2.0, 4.0, 6.0]],
+                    [[1.0, 3.0, 5.0, 7.0], [1.0, 3.0, 5.0, 7.0], [1.0, 3.0, 5.0, 7.0]],
+                ]
+            ),
+            unit=None,
+        ),
+    )
+
+
 @pytest.mark.parametrize('unit', [None, Unit(), Unit('m')])
 def test_neg(unit: Unit | None):
     da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=unit)
