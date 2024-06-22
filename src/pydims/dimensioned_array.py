@@ -88,7 +88,7 @@ class DimensionedArray:
         return array_api_compat.array_namespace(self.values)
 
     @property
-    def unit_api(self) -> Any:
+    def units_api(self) -> Any:
         return units_api.units_namespace(self.unit)
 
     @property
@@ -137,13 +137,13 @@ class DimensionedArray:
         )
 
     def _to_unit(self, unit: Any, copy: bool = True) -> DimensionedArray:
-        scale = self.unit_api.get_scale(src=self.unit, dst=unit)
+        scale = self.units_api.get_scale(src=self.unit, dst=unit)
         if scale == 1 and not copy:
             return self
         return DimensionedArray(
             values=self.values * scale,
             dims=self.dims,
-            unit=self.unit_api.Unit(unit),
+            unit=self.units_api.Unit(unit),
         )
 
     def to(
