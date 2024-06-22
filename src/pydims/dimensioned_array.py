@@ -242,18 +242,14 @@ class DimensionedArray:
         array:
             Array to set.
         """
+        from .common import broadcast_and_transpose_values
+
         dims, values_key = self._parse_key(key)
-        values = array.values
-        for dim in dims:
-            if dim not in array.dims:
-                values = array.array_api.expand_dims(values, axis=0)
         if any(dim not in dims for dim in array.dims):
             raise DimensionError("Value has extra dimensions")
         if array.unit != self.unit:
             raise UnitsError("Units must be identical")
-        new_dims = (*(set(dims) - set(array.dims)), *array.dims)
-        axes = tuple(new_dims.index(dim) for dim in dims)
-        self.values[values_key] = array.array_api.permute_dims(values, axes=axes)
+        self.values[values_key] = broadcast_and_transpose_values(array=array, dims=dims)
 
     def __neg__(self: DimArr) -> DimArr:
         from .common import unary
