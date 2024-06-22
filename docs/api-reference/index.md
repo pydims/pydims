@@ -9,6 +9,10 @@
    :toctree: ../generated/classes
    :template: class-template.rst
    :recursive:
+
+   CreationFunctions
+   DimensionedArray
+   DimensionError
 ```
 
 ## Top-level functions
@@ -17,6 +21,13 @@
 .. autosummary::
    :toctree: ../generated/functions
    :recursive:
+
+   all
+   any
+   exp
+   concat
+   reshape
+   stack
 ```
 
 ## Submodules

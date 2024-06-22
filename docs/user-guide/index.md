@@ -7,5 +7,6 @@
 maxdepth: 2
 ---
 
+getting-started
 differences-to-array-api
 ```

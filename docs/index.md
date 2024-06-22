@@ -45,31 +45,29 @@ import pydims as dims
 
 ureg = UnitRegistry()
 
-make = dims.CreationFunctions(np, ureg.Unit)
-a = make.ones(dims=('x', 'y'), shape=(10,10), unit='1/s')
+make = dims.CreationFunctions(np, ureg)
+a = make.ones(dims=('x', 'y'), shape=(10, 10), unit='1/s')
 b = make.linspace('x', 0, 9000, 10, unit='m')
 c = a * b
 c = c.to(unit='km/s')
 result = c[{'x': slice(2, 7), 'y': slice(2, 4)}]
-result
 ```
 
 With Dask Array and AstroPy units:
 
 ```python
 from dask import array
-from astropy.units import Unit
+from astropy import units
 import pydims as dms
 
-make = dms.CreationFunctions(array, Unit)
+make = dms.CreationFunctions(array, units)
 
-a = make.ones(dims=('x', 'y'), shape=(10,10), unit='1/s', chunks=(5,5))
+a = make.ones(dims=('x', 'y'), shape=(10, 10), unit='1/s', chunks=(5, 5))
 b = make.linspace('x', 0, 9000, 10, unit='m', chunks=(5,))
 c = a * b
 c = c.to(unit='km/s')
 c = c[{'x': slice(2, 7), 'y': slice(2, 4)}]
 result = dms.common.unary(c, values_op=lambda x: x.compute(), unit_op=lambda x: x)
-result
 ```
 
 ```{toctree}
