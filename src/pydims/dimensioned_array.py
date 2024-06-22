@@ -74,13 +74,13 @@ class DimensionedArray:
         )
 
     def _repr_html_(self) -> str:
+        dims_str = ", ".join(f"{dim}: {size}" for dim, size in self.sizes.items())
         return (
-            f"<table>"
-            f"<tr><td>dims</td><td>{self.dims}</td></tr>"
-            f"<tr><td>shape</td><td>{self.shape}</td></tr>"
-            f"<tr><td>values</td><td>{self.values}</td></tr>"
-            f"<tr><td>unit</td><td>{self.unit}</td></tr>"
-            f"</table>"
+            f"<table><tr>"
+            f"<td>DimensionedArray ({dims_str}):</td>"
+            f"<td>[{self.unit}]</td>"
+            f"<td>{self.values}</td>"
+            f"</tr></table>"
         )
 
     @property
