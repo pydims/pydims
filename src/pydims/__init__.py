@@ -25,7 +25,7 @@ from .array_api_manipulation_functions import (
     squeeze,
     stack,
 )
-from .array_api_utility_functions import all, any
+from .reduction_functions import all, any
 
 DimensionedArray.expand_dims = expand_dims
 DimensionedArray.flatten = flatten
