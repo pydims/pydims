@@ -4,7 +4,7 @@
 
 .. autoclass:: {{ objname }}
    :members:
-   :special-members: __getitem__
+   :special-members: __getitem__, __setitem__
 
    {% block methods %}
    .. automethod:: __init__

@@ -225,6 +225,19 @@ class DimensionedArray:
         return dims, values_key
 
     def __getitem__(self: DimArr, key: int | slice | dict[Dim, int | slice]) -> DimArr:
+        """
+        Get a sub-array identified by key.
+
+        Parameters
+        ----------
+        key:
+            Index or slice or dictionary of dimension names and indices.
+
+        Returns
+        -------
+        :
+            Sub-array.
+        """
         dims, values_key = self._parse_key(key)
         return self.__class__(values=self.values[values_key], dims=dims, unit=self.unit)
 
