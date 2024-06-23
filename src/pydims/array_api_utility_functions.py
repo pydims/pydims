@@ -30,7 +30,7 @@ def all(x: DimensionedArray, /, *, dim: Dim | Dims | None = None) -> Dimensioned
     axis, dims = _axis_dims_for_reduce(x, dim)
     # boolean output has unit=None, input unit is discarded
     return DimensionedArray(
-        values=x.array_api.all(x.values, axis=axis), dims=dims, unit=None
+        values=x.array_namespace.all(x.values, axis=axis), dims=dims, unit=None
     )
 
 
@@ -56,7 +56,7 @@ def any(x: DimensionedArray, /, *, dim: Dim | Dims | None = None) -> Dimensioned
     axis, dims = _axis_dims_for_reduce(x, dim)
     # boolean output has unit=None, input unit is discarded
     return DimensionedArray(
-        values=x.array_api.any(x.values, axis=axis), dims=dims, unit=None
+        values=x.array_namespace.any(x.values, axis=axis), dims=dims, unit=None
     )
 
 

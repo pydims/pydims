@@ -9,7 +9,7 @@ from typing import Any, Protocol, TypeVar
 
 import array_api_compat
 
-from . import units_api
+from . import units_api_compat
 
 DType = Any  # Is the array API standard defining a DType type?
 
@@ -94,12 +94,12 @@ class DimensionedArray:
         )
 
     @property
-    def array_api(self) -> Any:
+    def array_namespace(self) -> Any:
         return array_api_compat.array_namespace(self.values)
 
     @property
-    def units_api(self) -> Any:
-        return units_api.units_namespace(self.unit)
+    def units_namespace(self) -> Any:
+        return units_api_compat.units_namespace(self.unit)
 
     @property
     def dtype(self) -> DType:
@@ -141,19 +141,19 @@ class DimensionedArray:
 
     def astype(self: DimArr, dtype: DType, copy: bool = True) -> DimArr:
         return self.__class__(
-            values=self.array_api.astype(self.values, dtype, copy=copy),
+            values=self.array_namespace.astype(self.values, dtype, copy=copy),
             dims=self.dims,
             unit=self.unit,
         )
 
     def _to_unit(self: DimArr, unit: Any, copy: bool = True) -> DimArr:
-        scale = self.units_api.get_scale(src=self.unit, dst=unit)
+        scale = self.units_namespace.get_scale(src=self.unit, dst=unit)
         if scale == 1 and not copy:
             return self
         return self.__class__(
             values=self.values * scale,
             dims=self.dims,
-            unit=self.units_api.Unit(unit),
+            unit=self.units_namespace.Unit(unit),
         )
 
     def to(
@@ -190,7 +190,7 @@ class DimensionedArray:
             return self.astype(dtype, copy=copy)
 
         # TODO Logic copied from Scipp. Probably not complete with the Array API dtypes
-        api = self.array_api
+        api = self.array_namespace
         if dtype == api.float64:
             convert_dtype_first = True
         elif self.dtype == api.float64:
@@ -325,4 +325,6 @@ def _unit_must_be_dimensionless(unit: UnitImplementation) -> UnitImplementation:
 def exp(x: DimArr, /) -> DimArr:
     from .common import unary
 
-    return unary(x, values_op=x.array_api.exp, unit_op=_unit_must_be_dimensionless)
+    return unary(
+        x, values_op=x.array_namespace.exp, unit_op=_unit_must_be_dimensionless
+    )

@@ -117,7 +117,7 @@ def expand_dims(array: DimArr, /, sizes: dict[Dim, int]) -> DimArr:
     shape = (*sizes.values(), *array.shape)
     dims = (*sizes.keys(), *array.dims)
     return array.__class__(
-        values=array.array_api.broadcast_to(array.values, shape),
+        values=array.array_namespace.broadcast_to(array.values, shape),
         dims=dims,
         unit=array.unit,
     )
@@ -161,7 +161,7 @@ def flatten(
     if dim in new_dims:
         raise ValueError("Output dim must not be in preserved dims")
     new_dims[min(axes) : min(axes)] = [dim]
-    values = array.array_api.reshape(array.values, shape)
+    values = array.array_namespace.reshape(array.values, shape)
     return array.__class__(values=values, dims=new_dims, unit=array.unit)
 
 
@@ -192,7 +192,7 @@ def fold(array: DimArr, /, dim: Dim, *, sizes: Mapping[Dim, int]) -> DimArr:
     dims[axis : axis + 1] = sizes.keys()
     if len(dims) != len(set(dims)):
         raise ValueError("Duplicate dimensions")
-    values = array.array_api.reshape(array.values, shape)
+    values = array.array_namespace.reshape(array.values, shape)
     return array.__class__(values=values, dims=dims, unit=array.unit)
 
 
@@ -215,7 +215,7 @@ def permute_dims(array: DimArr, /, dims: Dims) -> DimArr:
     if set(dims) != set(array.dims):
         raise ValueError("New dims must contain all old dims")
     axes = [array.dims.index(dim) for dim in dims]
-    values = array.array_api.permute_dims(array.values, axes=axes)
+    values = array.array_namespace.permute_dims(array.values, axes=axes)
     return array.__class__(values=values, dims=dims, unit=array.unit)
 
 

@@ -29,7 +29,7 @@ def test_unit_conversion():
 
 
 def test_units_namespace_detects_astropy():
-    from pydims.units_api import units_namespace
+    from pydims.units_api_compat import units_namespace
 
     units_api = units_namespace(units.Unit(''))
     assert units_api is not None

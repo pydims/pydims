@@ -10,4 +10,4 @@ def assert_identical(a: dms.DimensionedArray, b: dms.DimensionedArray):
     assert a.shape == b.shape  # noqa: S101
     assert a.dtype == b.dtype  # noqa: S101
     assert a.unit == b.unit  # noqa: S101
-    assert a.array_api.all(a.values == b.values)  # noqa: S101
+    assert a.array_namespace.all(a.values == b.values)  # noqa: S101

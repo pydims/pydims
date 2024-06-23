@@ -15,7 +15,7 @@ from .dimensioned_array import (
     Shape,
     UnitImplementation,
 )
-from .units_api import units_namespace
+from .units_api_compat import units_namespace
 
 _default_unit = object()
 

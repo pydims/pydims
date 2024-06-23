@@ -28,10 +28,10 @@ def broadcast_and_transpose_values(
     values = array.values
     for dim in dims:
         if dim not in array.dims:
-            values = array.array_api.expand_dims(values, axis=0)
+            values = array.array_namespace.expand_dims(values, axis=0)
     new_dims = (*(set(dims) - set(array.dims)), *array.dims)
     axes = tuple(new_dims.index(dim) for dim in dims)
-    return array.array_api.permute_dims(values, axes=axes)
+    return array.array_namespace.permute_dims(values, axes=axes)
 
 
 def check_compatible_dims_and_shape(x: DimensionedArray, y: DimensionedArray) -> None:
