@@ -15,6 +15,7 @@ from .dimensioned_array import (
     Dim,
     DimArr,
     Dims,
+    DType,
     UnitImplementation,
 )
 
@@ -48,7 +49,7 @@ def _axis_dims_for_reduce(x, dim):
 
 def _reduce_docstring(short: str, op: str) -> str:
     return f"""
-    {short} along a dimension.
+    {short} along one or multiple dimensions.
 
     Parameters
     ----------
@@ -64,27 +65,145 @@ def _reduce_docstring(short: str, op: str) -> str:
     """
 
 
-def _unit_must_be_none(unit: UnitImplementation) -> None:
+def _unit_must_be_none(unit: UnitImplementation | None) -> None:
     if unit is not None:
         # TODO Is this what we want? Is there any harm in allowing a unit?
         raise ValueError("Unit is not supported for logical operation")
 
 
-def all(x: DimArr, /, *, dim: Dim | Dims | None = None) -> DimArr:
+def _keep_unit(unit: UnitImplementation | None) -> UnitImplementation | None:
+    return unit
+
+
+def _unit_must_be_idempotent(
+    unit: UnitImplementation | None,
+) -> UnitImplementation | None:
+    if unit is None:
+        return None
+    if unit * unit != unit:
+        raise ValueError("Unit must be idempotent")
+    return unit
+
+
+def all(x: DimArr, /, *, dim: Dim | Dims | None = None, **kwargs: Any) -> DimArr:
     return _reduce(
         x,
         dim=dim,
         values_op=x.array_namespace.all,
         unit_op=_unit_must_be_none,
+        **kwargs,
     )
 
 
-def any(x: DimArr, /, *, dim: Dim | Dims | None = None) -> DimArr:
+def any(x: DimArr, /, *, dim: Dim | Dims | None = None, **kwargs: Any) -> DimArr:
     return _reduce(
         x,
         dim=dim,
         values_op=x.array_namespace.any,
         unit_op=_unit_must_be_none,
+        **kwargs,
+    )
+
+
+def max(x: DimArr, /, *, dim: Dim | Dims | None = None, **kwargs: Any) -> DimArr:
+    return _reduce(
+        x,
+        dim=dim,
+        values_op=x.array_namespace.max,
+        unit_op=_keep_unit,
+        **kwargs,
+    )
+
+
+def min(x: DimArr, /, *, dim: Dim | Dims | None = None, **kwargs: Any) -> DimArr:
+    return _reduce(
+        x,
+        dim=dim,
+        values_op=x.array_namespace.min,
+        unit_op=_keep_unit,
+        **kwargs,
+    )
+
+
+def sum(
+    x: DimArr,
+    /,
+    *,
+    dim: Dim | Dims | None = None,
+    dtype: DType | None = None,
+    **kwargs: Any,
+) -> DimArr:
+    return _reduce(
+        x,
+        dim=dim,
+        values_op=x.array_namespace.sum,
+        unit_op=_keep_unit,
+        dtype=dtype,
+        **kwargs,
+    )
+
+
+def mean(x: DimArr, /, *, dim: Dim | Dims | None = None, **kwargs: Any) -> DimArr:
+    return _reduce(
+        x,
+        dim=dim,
+        values_op=x.array_namespace.mean,
+        unit_op=_keep_unit,
+        **kwargs,
+    )
+
+
+def prod(
+    x: DimArr,
+    /,
+    *,
+    dim: Dim | Dims | None = None,
+    dtype: DType | None = None,
+    **kwargs: Any,
+) -> DimArr:
+    return _reduce(
+        x,
+        dim=dim,
+        values_op=x.array_namespace.prod,
+        unit_op=_unit_must_be_idempotent,
+        dtype=dtype,
+        **kwargs,
+    )
+
+
+def std(
+    x: DimArr,
+    /,
+    *,
+    dim: Dim | Dims | None = None,
+    correction: float = 0,
+    **kwargs: Any,
+) -> DimArr:
+    return _reduce(
+        x,
+        dim=dim,
+        values_op=x.array_namespace.std,
+        unit_op=_keep_unit,
+        correction=correction,
+        **kwargs,
+    )
+
+
+def var(
+    x: DimArr,
+    /,
+    *,
+    dim: Dim | Dims | None = None,
+    correction: float = 0,
+    **kwargs: Any,
+) -> DimArr:
+    return _reduce(
+        x,
+        dim=dim,
+        values_op=x.array_namespace.var,
+        unit_op=lambda unit: None if unit is None else unit * unit,
+        correction=correction,
+        **kwargs,
     )
 
 
@@ -94,6 +213,14 @@ all.__doc__ = _reduce_docstring(
 any.__doc__ = _reduce_docstring(
     short="Test whether any elements are true", op="a logical OR reduction"
 )
+max.__doc__ = _reduce_docstring(short="Maximum value", op="a maximum reduction")
+mean.__doc__ = _reduce_docstring(short="Mean", op="a mean reduction")
+min.__doc__ = _reduce_docstring(short="Minimum value", op="a minimum reduction")
+prod.__doc__ = _reduce_docstring(short="Product", op="a product reduction")
+std.__doc__ = _reduce_docstring(
+    short="Standard deviation", op="a standard deviation reduction"
+)
+sum.__doc__ = _reduce_docstring(short="Sum", op="a sum reduction")
+var.__doc__ = _reduce_docstring(short="Variance", op="a variance reduction")
 
-
-__all__ = ['all', 'any']
+__all__ = ['all', 'any', 'max', 'min', 'sum', 'mean', 'prod', 'std', 'var']

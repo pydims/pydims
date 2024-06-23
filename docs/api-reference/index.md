@@ -25,9 +25,25 @@
    :toctree: ../generated/functions
    :recursive:
 
+   exp
+```
+
+### Reduction functions
+
+```{eval-rst}
+.. autosummary::
+   :toctree: ../generated/functions
+   :recursive:
+
    all
    any
-   exp
+   max
+   mean
+   min
+   prod
+   sum
+   std
+   var
 ```
 
 ### Manipulation functions
@@ -47,6 +63,7 @@
    reshape
    squeeze
    stack
+```
 
 ## Submodules
 

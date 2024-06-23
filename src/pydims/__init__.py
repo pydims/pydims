@@ -25,7 +25,7 @@ from .array_api_manipulation_functions import (
     squeeze,
     stack,
 )
-from .reduction_functions import all, any
+from .reduction_functions import all, any, max, min, sum, mean, prod, std, var
 
 DimensionedArray.expand_dims = expand_dims
 DimensionedArray.flatten = flatten
@@ -52,4 +52,11 @@ __all__ = [
     'squeeze',
     'stack',
     'UnitsError',
+    'max',
+    'mean',
+    'min',
+    'prod',
+    'std',
+    'sum',
+    'var',
 ]
