@@ -12,4 +12,6 @@ class Unit:
     value: str = ''
 
     def __mul__(self, other: Unit) -> Unit:
+        if other.value == '':
+            return self
         return Unit(f'({self.value})*({other.value})')

@@ -62,10 +62,20 @@ class DimensionedArray:
     def __init__(
         self,
         *,
-        values: ArrayImplementation,
         dims: Dims,
+        values: ArrayImplementation,
         unit: UnitImplementation | None,
     ):
+        """
+        Parameters
+        ----------
+        dims:
+            Dimension names.
+        values:
+            Array of values.
+        unit:
+            Optional unit.
+        """
         if len(dims) != values.ndim:
             raise ValueError(
                 f"Number of dimensions ({values.ndim}) does "
