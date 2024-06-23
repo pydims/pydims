@@ -15,12 +15,10 @@ from math import prod
 
 import array_api_compat
 
-from .dimensioned_array import Dim, DimensionedArray
+from .dimensioned_array import Dim, DimArr, Dims
 
 
-def concat(
-    arrays: tuple[DimensionedArray, ...], /, *, dim: Dim | None = None
-) -> DimensionedArray:
+def concat(arrays: tuple[DimArr, ...], /, *, dim: Dim | None = None) -> DimArr:
     """
     Concatenate arrays along a given dimension.
 
@@ -45,18 +43,18 @@ def concat(
     axis = first.dims.index(dim)
     values = [arr.values for arr in arrays]
     xp = array_api_compat.array_namespace(*values)
-    return DimensionedArray(
+    return first.__class__(
         values=xp.concat(values, axis=axis), dims=first.dims, unit=first.unit
     )
 
 
 def flatten(
-    array: DimensionedArray,
+    array: DimArr,
     /,
     *,
     dims: tuple[Dim, ...] | None = None,
     dim: Dim | None = None,
-) -> DimensionedArray:
+) -> DimArr:
     """
     Flatten a set of dimensions into a single dimension.
 
@@ -89,12 +87,10 @@ def flatten(
         raise ValueError("Output dim must not be in preserved dims")
     new_dims[min(axes) : min(axes)] = [dim]
     values = array.array_api.reshape(array.values, shape)
-    return DimensionedArray(values=values, dims=new_dims, unit=array.unit)
+    return array.__class__(values=values, dims=new_dims, unit=array.unit)
 
 
-def fold(
-    array: DimensionedArray, /, dim: Dim, *, sizes: Mapping[Dim, int]
-) -> DimensionedArray:
+def fold(array: DimArr, /, dim: Dim, *, sizes: Mapping[Dim, int]) -> DimArr:
     """
     Fold a dimension of an array into a new set of dimensions.
 
@@ -122,7 +118,30 @@ def fold(
     if len(dims) != len(set(dims)):
         raise ValueError("Duplicate dimensions")
     values = array.array_api.reshape(array.values, shape)
-    return DimensionedArray(values=values, dims=dims, unit=array.unit)
+    return array.__class__(values=values, dims=dims, unit=array.unit)
+
+
+def permute_dims(array: DimArr, /, dims: Dims) -> DimArr:
+    """
+    Permute the dimensions of an array.
+
+    Parameters
+    ----------
+    array:
+        Array to permute.
+    dims:
+        New order of dimensions.
+
+    Returns
+    -------
+    :
+        Permuted array.
+    """
+    if set(dims) != set(array.dims):
+        raise ValueError("New dims must contain all old dims")
+    axes = [array.dims.index(dim) for dim in dims]
+    values = array.array_api.permute_dims(array.values, axes=axes)
+    return array.__class__(values=values, dims=dims, unit=array.unit)
 
 
 def reshape(*args, **kwargs):
@@ -133,12 +152,12 @@ def reshape(*args, **kwargs):
 
 
 def stack(
-    arrays: tuple[DimensionedArray, ...] | list[DimensionedArray],
+    arrays: tuple[DimArr, ...] | list[DimArr],
     /,
     *,
     dim: Dim,
     axis: int = 0,
-) -> DimensionedArray:
+) -> DimArr:
     """
     Stack arrays along a new dimension.
 
@@ -167,7 +186,7 @@ def stack(
     dims.insert(axis if axis >= 0 else first.ndim + 1 + axis, dim)
     values = [arr.values for arr in arrays]
     xp = array_api_compat.array_namespace(*values)
-    return DimensionedArray(
+    return first.__class__(
         values=xp.stack(values, axis=axis), dims=dims, unit=first.unit
     )
 

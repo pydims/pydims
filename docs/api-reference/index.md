@@ -28,6 +28,7 @@
    concat
    flatten
    fold
+   permute_dims
    reshape
    stack
 ```

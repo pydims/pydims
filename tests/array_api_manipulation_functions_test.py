@@ -191,6 +191,18 @@ def test_fold_last():
     )
 
 
+def test_permute_dims_xyz_to_zxy():
+    da = dms.DimensionedArray(
+        values=np.ones((2, 3, 4)), dims=('x', 'y', 'z'), unit=None
+    )
+    assert_identical(
+        dms.permute_dims(da, dims=('z', 'x', 'y')),
+        dms.DimensionedArray(
+            values=np.ones((4, 2, 3)), dims=('z', 'x', 'y'), unit=None
+        ),
+    )
+
+
 def test_reshape_raises_NotImplementedError():
     with pytest.raises(NotImplementedError, match="`reshape` is not supported"):
         dms.reshape()
