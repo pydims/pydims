@@ -13,6 +13,7 @@
    CreationFunctions
    DimensionedArray
    DimensionError
+   UnitsError
 ```
 
 ## Top-level functions
