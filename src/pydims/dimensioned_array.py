@@ -242,7 +242,12 @@ class DimensionedArray:
         array:
             Array to set.
         """
-        from .common import broadcast_and_transpose_values
+        from .common import (
+            broadcast_and_transpose_values,
+            check_compatible_dims_and_shape,
+        )
+
+        check_compatible_dims_and_shape(self, array)
 
         dims, values_key = self._parse_key(key)
         if any(dim not in dims for dim in array.dims):

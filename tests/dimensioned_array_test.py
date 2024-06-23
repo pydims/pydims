@@ -103,8 +103,8 @@ def test_setitem_transposes_automatically():
 def test_setitem_raises_if_sizes_do_not_match():
     da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
     with pytest.raises(
-        ValueError,
-        match="could not broadcast input array from shape",
+        dms.DimensionError,
+        match="Sizes of dimension 'x' do not match: 2 != 3",
     ):
         da[{'x': slice(None)}] = dms.DimensionedArray(
             values=array.ones((3, 3)), dims=('x', 'y'), unit=None
@@ -155,6 +155,17 @@ def test_setitem_broadcasts_and_transposed_simultaneously():
             unit=None,
         ),
     )
+
+
+def test_setitem_does_not_broadcast_dims_of_size_1():
+    da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
+    with pytest.raises(
+        dms.DimensionError,
+        match="Sizes of dimension 'y' do not match: 3 != 1",
+    ):
+        da[{'x': 0}] = dms.DimensionedArray(
+            values=array.ones((1,)), dims=('y'), unit=None
+        )
 
 
 @pytest.mark.parametrize('unit', [None, Unit(), Unit('m')])
@@ -224,3 +235,15 @@ def test_elemwise_binary_xyz_zx():
         xyz, zx, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
     )
     assert result.sizes == {'x': 2, 'y': 3, 'z': 4}
+
+
+def test_elemwise_binary_raises_if_dim_of_size_1_would_need_broadcasting():
+    x = dms.DimensionedArray(values=array.ones((2, 1)), dims=('x', 'y'), unit=None)
+    y = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
+    with pytest.raises(
+        dms.DimensionError,
+        match="Sizes of dimension 'y' do not match: 1 != 3",
+    ):
+        dms.common.elemwise_binary(
+            x, y, values_op=lambda a, b: a + b, unit_op=lambda a, b: a
+        )
