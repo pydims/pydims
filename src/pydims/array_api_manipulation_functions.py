@@ -2,23 +2,18 @@
 # Copyright (c) 2024 PyDims contributors (https://github.com/pydims)
 """
 Functions from the "Manipulation Functions" section of the Python Array API.
-
-Will not support:
-
-- broadcast_arrays
-- broadcast_to
-- reshape -> use fold and flatten instead
 """
 
 from collections.abc import Mapping
 from math import prod
+from typing import Any, NoReturn
 
 import array_api_compat
 
 from .dimensioned_array import Dim, DimArr, Dims
 
 
-def _not_supported_because_if_relies_on_axis_order(
+def _not_supported_because_it_relies_on_axis_order(
     name: str, alternatives: tuple[str, ...]
 ) -> NotImplementedError:
     alternatives = [f":py:func:`{alt}`" for alt in alternatives]
@@ -28,16 +23,41 @@ def _not_supported_because_if_relies_on_axis_order(
     )
 
 
-def reshape(*args, **kwargs):
-    raise _not_supported_because_if_relies_on_axis_order(
+_not_supported_axis_order_doc = """
+    Not supported since it relies on a particular axis order.
+
+    This function of the Python Array API is not supported by PyDims because it
+    relies on a particular axis order. This library does not support this since
+    it can lead to errors that are hard to debug.
+
+    Raises
+    ------
+    NotImplementedError
+        Always.
+    """
+
+
+def broadcast_to(*args: Any, **kwargs: Any) -> NoReturn:
+    raise _not_supported_because_it_relies_on_axis_order(
+        "broadcast_to", alternatives=("expand_dims",)
+    )
+
+
+def reshape(*args: Any, **kwargs: Any) -> NoReturn:
+    raise _not_supported_because_it_relies_on_axis_order(
         "reshape", alternatives=("fold", "flatten")
     )
 
 
-def moveaxis(*args, **kwargs):
-    raise _not_supported_because_if_relies_on_axis_order(
+def moveaxis(*args: Any, **kwargs: Any) -> NoReturn:
+    raise _not_supported_because_it_relies_on_axis_order(
         "moveaxis", alternatives=("permute_dims",)
     )
+
+
+broadcast_to.__doc__ = _not_supported_axis_order_doc
+moveaxis.__doc__ = _not_supported_axis_order_doc
+reshape.__doc__ = _not_supported_axis_order_doc
 
 
 def concat(arrays: tuple[DimArr, ...], /, *, dim: Dim | None = None) -> DimArr:
@@ -67,6 +87,39 @@ def concat(arrays: tuple[DimArr, ...], /, *, dim: Dim | None = None) -> DimArr:
     xp = array_api_compat.array_namespace(*values)
     return first.__class__(
         values=xp.concat(values, axis=axis), dims=first.dims, unit=first.unit
+    )
+
+
+def expand_dims(array: DimArr, /, sizes: dict[Dim, int]) -> DimArr:
+    """
+    Expand an array by adding new dimensions of the given sizes at the beginning.
+
+    Note that in contrast to the underlying expand_dims function, this function
+    does not add dimensions of size 1, since this library implements broadcasting
+    differently.
+
+    Use :py:func:`permute_dims` to control the order of the old and new dimensions.
+
+    Parameters
+    ----------
+    array:
+        Array to expand.
+    sizes:
+        Ordered names and sizes of the new dimensions.
+
+    Returns
+    -------
+    :
+        Expanded array.
+    """
+    if set(sizes) & set(array.dims):
+        raise ValueError("New dims must not overlap with old dims")
+    shape = (*sizes.values(), *array.shape)
+    dims = (*sizes.keys(), *array.dims)
+    return array.__class__(
+        values=array.array_api.broadcast_to(array.values, shape),
+        dims=dims,
+        unit=array.unit,
     )
 
 

@@ -14,7 +14,9 @@ del importlib
 from .creation_functions import CreationFunctions
 from .dimensioned_array import DimensionedArray, DimensionError, exp, UnitsError
 from .array_api_manipulation_functions import (
+    broadcast_to,
     concat,
+    expand_dims,
     flatten,
     fold,
     moveaxis,
@@ -27,9 +29,11 @@ from .array_api_utility_functions import all, any
 __all__ = [
     'all',
     'any',
+    'broadcast_to',
     'CreationFunctions',
     'DimensionedArray',
     'DimensionError',
+    'expand_dims',
     'exp',
     'flatten',
     'fold',

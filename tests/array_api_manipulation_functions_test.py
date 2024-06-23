@@ -9,6 +9,21 @@ import pydims as dms
 from pydims.testing import assert_identical
 
 
+def test_broadcast_to_raises_NotImplementedError():
+    with pytest.raises(NotImplementedError, match="`broadcast_to` is not supported"):
+        dms.broadcast_to()
+
+
+def test_moveaxis_raises_NotImplementedError():
+    with pytest.raises(NotImplementedError, match="`moveaxis` is not supported"):
+        dms.moveaxis()
+
+
+def test_reshape_raises_NotImplementedError():
+    with pytest.raises(NotImplementedError, match="`reshape` is not supported"):
+        dms.reshape()
+
+
 def test_concat():
     da = dms.DimensionedArray(values=np.ones((2, 3)), dims=('x', 'y'), unit=None)
     assert_identical(
@@ -19,6 +34,17 @@ def test_concat():
         dms.concat((da, da), dim='y'),
         dms.DimensionedArray(values=np.ones((2, 6)), dims=('x', 'y'), unit=None),
     )
+
+
+def test_expand_dims_add_dims_at_beginning():
+    da = dms.DimensionedArray(
+        values=np.arange(6).reshape((2, 3)), dims=('x', 'y'), unit=None
+    )
+    expected = dms.stack((da, da, da), dim='w')
+    expected = dms.stack((expected, expected), dim='z')
+    result = dms.expand_dims(da, sizes={'z': 2, 'w': 3})
+    assert_identical(result, expected)
+    assert result.values.strides == (0, 0, 24, 8)
 
 
 @pytest.mark.parametrize(
@@ -193,11 +219,6 @@ def test_fold_last():
     )
 
 
-def test_moveaxis_raises_NotImplementedError():
-    with pytest.raises(NotImplementedError, match="`moveaxis` is not supported"):
-        dms.moveaxis()
-
-
 def test_permute_dims_xyz_to_zxy():
     da = dms.DimensionedArray(
         values=np.ones((2, 3, 4, 5)), dims=('x', 'y', 'z', 'w'), unit=None
@@ -208,11 +229,6 @@ def test_permute_dims_xyz_to_zxy():
             dms.permute_dims(da, dims=dims),
             dms.DimensionedArray(values=np.ones(shape), dims=dims, unit=None),
         )
-
-
-def test_reshape_raises_NotImplementedError():
-    with pytest.raises(NotImplementedError, match="`reshape` is not supported"):
-        dms.reshape()
 
 
 def test_stack():

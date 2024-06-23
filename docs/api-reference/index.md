@@ -24,10 +24,13 @@
 
    all
    any
+   broadcast_to
    exp
+   expand_dims
    concat
    flatten
    fold
+   moveaxis
    permute_dims
    reshape
    stack

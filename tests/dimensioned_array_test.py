@@ -14,6 +14,11 @@ def test_init_raises_if_dims_has_wrong_length(dims: tuple[str, ...]):
         dms.DimensionedArray(values=array.ones((2, 3)), dims=dims, unit=None)
 
 
+def test_init_raises_if_dims_not_unique():
+    with pytest.raises(ValueError, match="Dimensions must be unique"):
+        dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'x'), unit=None)
+
+
 def test_sizes():
     da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
     assert da.sizes == {'x': 2, 'y': 3}

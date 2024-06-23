@@ -70,6 +70,8 @@ class DimensionedArray:
                 f"Number of dimensions ({values.ndim}) does "
                 f"not match number of dims ({len(dims)})"
             )
+        if len(set(dims)) != len(dims):
+            raise ValueError(f"Dimensions must be unique, got {dims}")
         self._values = values
         self._dims = tuple(dims)
         self._unit = unit
