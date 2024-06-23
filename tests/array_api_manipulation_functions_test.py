@@ -231,6 +231,46 @@ def test_permute_dims_xyz_to_zxy():
         )
 
 
+def test_squeeze_raises_if_dim_not_in_dims():
+    da = dms.DimensionedArray(values=np.ones((2, 3)), dims=('x', 'y'), unit=None)
+    with pytest.raises(ValueError, match="Dimension not found"):
+        dms.squeeze(da, dim='z')
+
+
+def test_squeeze_with_no_dim_squeezes_all_dims_of_size_1():
+    da = dms.DimensionedArray(
+        values=np.ones((1, 2, 1, 3, 1)), dims=('x', 'y', 'z', 'w', 'v'), unit=None
+    )
+    assert_identical(
+        dms.squeeze(da),
+        dms.DimensionedArray(values=np.ones((2, 3)), dims=('y', 'w'), unit=None),
+    )
+
+
+def test_squeeze_with_dim_squeezes_only_that_dim():
+    da = dms.DimensionedArray(
+        values=np.ones((1, 2, 1, 3, 1)), dims=('x', 'y', 'z', 'w', 'v'), unit=None
+    )
+    assert_identical(
+        dms.squeeze(da, dim='z'),
+        dms.DimensionedArray(
+            values=np.ones((1, 2, 3, 1)), dims=('x', 'y', 'w', 'v'), unit=None
+        ),
+    )
+
+
+def test_squeeze_with_multiple_dims_squeezes_only_those_dims():
+    da = dms.DimensionedArray(
+        values=np.ones((1, 2, 1, 3, 1)), dims=('x', 'y', 'z', 'w', 'v'), unit=None
+    )
+    assert_identical(
+        dms.squeeze(da, dim=('x', 'z')),
+        dms.DimensionedArray(
+            values=np.ones((2, 3, 1)), dims=('y', 'w', 'v'), unit=None
+        ),
+    )
+
+
 def test_stack():
     da = dms.DimensionedArray(values=np.ones((4, 3)), dims=('x', 'y'), unit=None)
     assert_identical(

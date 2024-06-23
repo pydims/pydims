@@ -219,6 +219,34 @@ def permute_dims(array: DimArr, /, dims: Dims) -> DimArr:
     return array.__class__(values=values, dims=dims, unit=array.unit)
 
 
+def squeeze(array: DimArr, /, dim: Dim | tuple[Dim, ...] | None = None) -> DimArr:
+    """
+    Remove dimensions of size 1.
+
+    Parameters
+    ----------
+    array:
+        Array to squeeze.
+    dim:
+        Dimensions to remove. If None, remove all dimensions of size 1.
+
+    Returns
+    -------
+    :
+        Squeezed array.
+    """
+    if dim is None:
+        dim = tuple(dim for dim, size in array.sizes.items() if size == 1)
+    elif isinstance(dim, str):
+        dim = (dim,)
+    if not all(d in array.dims for d in dim):
+        raise ValueError(f"Dimension not found {dim}")
+    dims = [d for d in array.dims if d not in dim]
+    axis = tuple(array.dims.index(d) for d in dim)
+    values = array.array_namespace.squeeze(array.values, axis=axis)
+    return array.__class__(values=values, dims=dims, unit=array.unit)
+
+
 def stack(
     arrays: tuple[DimArr, ...] | list[DimArr],
     /,
@@ -259,4 +287,15 @@ def stack(
     )
 
 
-__all__ = ['concat', 'reshape', 'stack']
+__all__ = [
+    'broadcast_to',
+    'concat',
+    'expand_dims',
+    'flatten',
+    'fold',
+    'moveaxis',
+    'permute_dims',
+    'reshape',
+    'squeeze',
+    'stack',
+]

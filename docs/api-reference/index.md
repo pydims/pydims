@@ -18,6 +18,8 @@
 
 ## Top-level functions
 
+### General
+
 ```{eval-rst}
 .. autosummary::
    :toctree: ../generated/functions
@@ -25,17 +27,26 @@
 
    all
    any
-   broadcast_to
    exp
-   expand_dims
+```
+
+### Manipulation functions
+
+```{eval-rst}
+.. autosummary::
+   :toctree: ../generated/functions
+   :recursive:
+
+   broadcast_to
    concat
+   expand_dims
    flatten
    fold
    moveaxis
    permute_dims
    reshape
+   squeeze
    stack
-```
 
 ## Submodules
 

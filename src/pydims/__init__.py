@@ -22,6 +22,7 @@ from .array_api_manipulation_functions import (
     moveaxis,
     permute_dims,
     reshape,
+    squeeze,
     stack,
 )
 from .array_api_utility_functions import all, any
@@ -41,6 +42,7 @@ __all__ = [
     'moveaxis',
     'permute_dims',
     'reshape',
+    'squeeze',
     'stack',
     'UnitsError',
 ]
