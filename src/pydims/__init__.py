@@ -27,6 +27,13 @@ from .array_api_manipulation_functions import (
 )
 from .array_api_utility_functions import all, any
 
+DimensionedArray.expand_dims = expand_dims
+DimensionedArray.flatten = flatten
+DimensionedArray.fold = fold
+DimensionedArray.permute_dims = permute_dims
+DimensionedArray.reshape = reshape
+DimensionedArray.squeeze = squeeze
+
 __all__ = [
     'all',
     'any',
