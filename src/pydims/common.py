@@ -47,6 +47,7 @@ def check_compatible_dims_and_shape(x: DimensionedArray, y: DimensionedArray) ->
             raise DimensionError(msg)
 
 
+# TODO make this a method, DimensionedArray.transform?
 def unary(
     x: DimArr,
     values_op: Callable[[ArrayImplementation], ArrayImplementation],

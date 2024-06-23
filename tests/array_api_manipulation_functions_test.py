@@ -191,6 +191,11 @@ def test_fold_last():
     )
 
 
+def test_moveaxis_raises_NotImplementedError():
+    with pytest.raises(NotImplementedError, match="`moveaxis` is not supported"):
+        dms.moveaxis()
+
+
 def test_permute_dims_xyz_to_zxy():
     da = dms.DimensionedArray(
         values=np.ones((2, 3, 4)), dims=('x', 'y', 'z'), unit=None

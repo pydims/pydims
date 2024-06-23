@@ -18,6 +18,28 @@ import array_api_compat
 from .dimensioned_array import Dim, DimArr, Dims
 
 
+def _not_supported_because_if_relies_on_axis_order(
+    name: str, alternatives: tuple[str, ...]
+) -> NotImplementedError:
+    alternatives = [f":py:func:`{alt}`" for alt in alternatives]
+    return NotImplementedError(
+        f"`{name}` is not supported, use {' or '.join(alternatives)} instead. "
+        f"Reason: `{name}` is error-prone since it relies on a particular axis order."
+    )
+
+
+def reshape(*args, **kwargs):
+    raise _not_supported_because_if_relies_on_axis_order(
+        "reshape", alternatives=("fold", "flatten")
+    )
+
+
+def moveaxis(*args, **kwargs):
+    raise _not_supported_because_if_relies_on_axis_order(
+        "moveaxis", alternatives=("permute_dims",)
+    )
+
+
 def concat(arrays: tuple[DimArr, ...], /, *, dim: Dim | None = None) -> DimArr:
     """
     Concatenate arrays along a given dimension.
@@ -142,13 +164,6 @@ def permute_dims(array: DimArr, /, dims: Dims) -> DimArr:
     axes = [array.dims.index(dim) for dim in dims]
     values = array.array_api.permute_dims(array.values, axes=axes)
     return array.__class__(values=values, dims=dims, unit=array.unit)
-
-
-def reshape(*args, **kwargs):
-    raise NotImplementedError(
-        "`reshape` is not supported, use `fold` and `flatten` instead."
-        "Reason: `reshape` is error-prone since it relies on a particular axis order."
-    )
 
 
 def stack(
