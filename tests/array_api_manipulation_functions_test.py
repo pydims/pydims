@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright (c) 2024 PyDims contributors (https://github.com/pydims)
+from itertools import permutations
+
 import numpy as np
 import pytest
 
@@ -198,14 +200,14 @@ def test_moveaxis_raises_NotImplementedError():
 
 def test_permute_dims_xyz_to_zxy():
     da = dms.DimensionedArray(
-        values=np.ones((2, 3, 4)), dims=('x', 'y', 'z'), unit=None
+        values=np.ones((2, 3, 4, 5)), dims=('x', 'y', 'z', 'w'), unit=None
     )
-    assert_identical(
-        dms.permute_dims(da, dims=('z', 'x', 'y')),
-        dms.DimensionedArray(
-            values=np.ones((4, 2, 3)), dims=('z', 'x', 'y'), unit=None
-        ),
-    )
+    for dims in permutations(da.dims):
+        shape = tuple(da.sizes[dim] for dim in dims)
+        assert_identical(
+            dms.permute_dims(da, dims=dims),
+            dms.DimensionedArray(values=np.ones(shape), dims=dims, unit=None),
+        )
 
 
 def test_reshape_raises_NotImplementedError():
