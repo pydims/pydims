@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import operator
 from collections.abc import Hashable, Iterator, Mapping
+from types import EllipsisType
 from typing import Any, Protocol, TypeVar
 
 import array_api_compat
@@ -211,8 +212,10 @@ class DimensionedArray:
             return self.to(unit=unit, copy=copy).to(dtype=dtype, copy=False)
 
     def _parse_key(
-        self, key: int | slice | dict[Dim, int | slice]
+        self, key: int | slice | dict[Dim, int | slice] | EllipsisType
     ) -> tuple[Dims, Shape]:
+        if key is Ellipsis:
+            return self.dims, key
         if not isinstance(key, Mapping):
             if self.ndim != 1:
                 raise DimensionError("Only 1-D arrays can be indexed without dims")
@@ -224,7 +227,9 @@ class DimensionedArray:
             raise DimensionError(f"Unknown dimensions: {tuple(key.keys())}")
         return dims, values_key
 
-    def __getitem__(self: DimArr, key: int | slice | dict[Dim, int | slice]) -> DimArr:
+    def __getitem__(
+        self: DimArr, key: int | slice | dict[Dim, int | slice] | EllipsisType
+    ) -> DimArr:
         """
         Get a sub-array identified by key.
 
@@ -242,7 +247,9 @@ class DimensionedArray:
         return self.__class__(values=self.values[values_key], dims=dims, unit=self.unit)
 
     def __setitem__(
-        self: DimArr, key: int | slice | dict[Dim, int | slice], array: DimArr
+        self: DimArr,
+        key: int | slice | dict[Dim, int | slice] | EllipsisType,
+        array: DimArr,
     ):
         """
         Set a sub-array identified by key to the values of array.

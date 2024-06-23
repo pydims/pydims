@@ -24,6 +24,13 @@ def test_sizes():
     assert da.sizes == {'x': 2, 'y': 3}
 
 
+def test_getitem_ellipsis_returns_everything():
+    da = dms.DimensionedArray(
+        values=array.ones((2, 3, 4)), dims=('x', 'y', 'z'), unit=None
+    )
+    assert_identical(da[...], da)
+
+
 def test_getitem_no_dim_raises_if_not_1d():
     da = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
     with pytest.raises(
@@ -138,6 +145,13 @@ def test_setitem_can_broadcast():
             unit=None,
         ),
     )
+
+
+def test_setitem_ellipsis_broadcasts_to_everything():
+    da = dms.DimensionedArray(values=array.zeros((2, 3)), dims=('x', 'y'), unit=None)
+    da[...] = dms.DimensionedArray(values=array.ones(()), dims=(), unit=None)
+    ones = dms.DimensionedArray(values=array.ones((2, 3)), dims=('x', 'y'), unit=None)
+    assert_identical(da, ones)
 
 
 def test_setitem_broadcasts_and_transposed_simultaneously():
