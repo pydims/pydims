@@ -13,6 +13,7 @@ del importlib
 
 from .creation_functions import CreationFunctions
 from .dimensioned_array import DimensionedArray, DimensionError, exp, UnitsError
+from .indexing_functions import take
 from .array_api_manipulation_functions import (
     broadcast_to,
     concat,
@@ -51,6 +52,7 @@ __all__ = [
     'reshape',
     'squeeze',
     'stack',
+    'take',
     'UnitsError',
     'max',
     'mean',

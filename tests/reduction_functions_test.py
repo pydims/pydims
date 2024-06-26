@@ -13,7 +13,7 @@ make = dms.CreationFunctions(array=np, units=dms.string_units)
     'func',
     [dms.all, dms.any, dms.max, dms.min, dms.sum, dms.mean, dms.std, dms.var, dms.prod],
 )
-def reduction_raises_if_given_keepdims_argument(func):
+def test_reduction_raises_if_given_keepdims_argument(func):
     da = make.asarray(dims=('x',), values=[1, 2, 3], unit=None)
     with pytest.raises(ValueError, match="keepdims is not supported"):
         _ = func(da, dim='x', keepdims=True)

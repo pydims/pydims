@@ -65,6 +65,16 @@
    stack
 ```
 
+### Indexing functions
+
+```{eval-rst}
+.. autosummary::
+   :toctree: ../generated/functions
+   :recursive:
+
+   take
+```
+
 ## Submodules
 
 ```{eval-rst}
